@@ -1,5 +1,10 @@
 import json
+import os
 import requests
+
+host_url = os.getenv("cowbull_host", "http://localhost:5000/")
+host_ver = os.getenv("cowbull_version", "v_01")
+game_url = "{}{}/game".format(host_url, host_ver)
 
 
 instructions = "Welcome to the CowBull game. The objective of this game is to guess " \
@@ -19,7 +24,7 @@ while True:
 
 print()
 print('Requesting a new game.')
-r = requests.get("http://localhost:5000/v0_1/game")
+r = requests.get(game_url)
 try:
     game_data = r.json()
 except ValueError as ve:
@@ -50,7 +55,7 @@ while True:
         "key": game_key,
         "digits": guesses
     }
-    r = requests.post(url="http://localhost:5000/v0_1/game", json=payload, headers=headers)
+    r = requests.post(url=game_url, json=payload, headers=headers)
     try:
         response_data = r.json()
     except ValueError as ve:
