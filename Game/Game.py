@@ -100,13 +100,12 @@ class Game:
         return return_status
 
     def get_game(self, mode=None):
-        print("Playing {} mode".format(mode))
-        input("Hit return to continue...")
         if mode is None:
-            print("Setting default mode!")
             mode = "normal"
         r = None
         try:
+            print("Playing {} mode".format(self.game_url+"?{}".format(mode)))
+            input("Hit return to continue...")
             r = requests.get(self.game_url+"?{}".format(mode))
         except requests.ConnectionError as ce:
             pass
