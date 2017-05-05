@@ -94,7 +94,7 @@ class Game:
               .format(game_server))
 
     def play_game(self):
-        pass
+        input_list = self._get_input()
 
     def _get_input(self):
         return_list = []
