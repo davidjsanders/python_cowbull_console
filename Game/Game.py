@@ -113,6 +113,7 @@ class Game:
 
     def play_game(self):
         _=os.system('clear')
+        self._show_analysis()
         for i in range(0, self.game_tries):
             input_list = self._get_input()
             if not input_list:
@@ -124,8 +125,11 @@ class Game:
                     self._analyse_results(game_output["outcome"]["analysis"]),
                     input_list
                 )
-            for line in self.user_output:
-                print(line)
+            self._show_analysis()
+
+    def _show_analysis(self):
+        for line in self.user_output:
+            print(line)
 
     def _analyse_results(self, game_analysis):
         output_string = ""
