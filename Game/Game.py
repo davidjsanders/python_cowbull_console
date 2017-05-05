@@ -29,7 +29,7 @@ class Game:
         self.user_output = [
             "Game Analysis",
             "",
-            "Try|1 2 3 4    |Your guess",
+            "Try|1 2 3 4    |Your guesses",
             "-"*78,
             "",
             "",
@@ -127,7 +127,7 @@ class Game:
                 .format(
                     i+1,
                     self._analyse_results(game_output["outcome"]["analysis"]),
-                    input_list
+                    str(input_list).replace('[','').replace(']', '')
                 )
             _ = os.system('clear')
             self._show_analysis()
