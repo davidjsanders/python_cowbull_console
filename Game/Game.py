@@ -100,6 +100,8 @@ class Game:
         return return_status
 
     def get_game(self, mode=None):
+        print("Playing {} mode".format(mode))
+        input("Hit return to continue...")
         if mode is None:
             print("Setting default mode!")
             mode = "normal"
