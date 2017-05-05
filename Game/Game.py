@@ -119,7 +119,7 @@ class Game:
             game_output = self._make_guess(input_list)
             self.user_output[2+i] = "{:2d} |{}   {}"\
                 .format(
-                    i,
+                    i+1,
                     self._analyse_results(game_output["outcome"]["analysis"]),
                     input_list
                 )
