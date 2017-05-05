@@ -36,15 +36,16 @@ class Game:
     def check_server_ready(self):
         return_status = False
         try_count = 0
+        try_limit = 3
 
-        while try_count < 5:
+        while try_count < try_limit:
             try:
                 r = requests.post(url=self.game_url)
                 return_status = True
                 break
             except requests.ConnectionError as ce:
-                print("Connectiong failed. Re-trying in {} seconds...".format(2 * (try_count + 1)))
-                sleep(2 * (try_count + 1))
+                print("Connectiong failed. Re-trying in {} seconds...".format(5 * (try_count + 1)))
+                sleep(5 * (try_count + 1))
                 pass
             except Exception as e:
                 print()
