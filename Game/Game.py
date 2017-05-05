@@ -141,7 +141,8 @@ class Game:
         if self.game_tries < len(self.user_output) - 10:
             start = self.game_tries + self.output_offset
             for i in range(start, len(self.user_output)):
-                del(self.user_output[i-1])
+                print("Removing {}".format(i))
+                del(self.user_output[i])
 
         _=os.system('clear')
 
