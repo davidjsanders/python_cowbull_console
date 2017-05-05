@@ -146,7 +146,6 @@ class Game:
         output_string = ""
 
         for analysis_record in game_analysis:
-            output_string += "| "
             if analysis_record["multiple"]:
                 output_string += chr(27) + "[1m"
 
@@ -159,6 +158,8 @@ class Game:
 
             if analysis_record["multiple"]:
                 output_string += chr(27) + "[0m"
+
+            output_string += "| "
 
         return output_string
 
