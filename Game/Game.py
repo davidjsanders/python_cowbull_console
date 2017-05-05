@@ -95,6 +95,7 @@ class Game:
 
     def play_game(self):
         input_list = self._get_input()
+        print(input_list)
 
     def _get_input(self):
         return_list = []
