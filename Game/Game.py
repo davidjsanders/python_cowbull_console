@@ -26,25 +26,37 @@ class Game:
         self.game_digits = None
         self.game_tries = None
         self.guesses = []
-        self.user_output = [
-            "Game Analysis: x (miss), * (Bull), - (Cow), " + chr(27) + "[1mbold" + chr(27) +"[0m (multiple)",
-            "-"*78,
-            "",
-            "Try | 1| 2| 3| 4|      | Your guesses",
-            "-"*78,
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "-"*78,
+        self.user_output_header = [
+            "Game Analysis: x (miss), * (Bull), - (Cow), " + chr(27) + "[1mbold" + chr(27) + "[0m (multiple)",
+            "-" * 78,
             ""
         ]
+        self.user_output_try = ""
+        self.user_output = []
+        self.user_output_footer = [
+            "-" * 78,
+            ""
+        ]
+
+#        self.user_output = [
+#            "Game Analysis: x (miss), * (Bull), - (Cow), " + chr(27) + "[1mbold" + chr(27) +"[0m (multiple)",
+#            "-"*78,
+#            "",
+#            "Try | 1| 2| 3| 4|      | Your guesses",
+#            "-"*78,
+#            "",
+#            "",
+#            "",
+#            "",
+#            "",
+#            "",
+#            "",
+#            "",
+#            "",
+#            "",
+#            "-"*78,
+#            ""
+#        ]
         self.line_format = "  {:2d}| {}     | {}"
         self.output_offset = 5
 
@@ -137,12 +149,10 @@ class Game:
                 .replace(',','')\
                 .replace("'",'')
 
-        self.user_output[3] = "Try |{}      | Your guesses".format(digits_needed)
-        if self.game_tries < len(self.user_output) - 10:
-            start = self.game_tries + self.output_offset
-            for i in range(start, len(self.user_output) - 1):
-                print("Removing {}".format(i))
-                del(self.user_output[i])
+        self.user_output_try = "Try |{}      | Your guesses".format(digits_needed)
+        self.user_output = []
+        for i in range(0, self.game_tries):
+            self.user_output.append("  {:2d}|".format(i+1))
 
         _=os.system('clear')
 
@@ -152,7 +162,7 @@ class Game:
             if not input_list:
                 break
             game_output = self._make_guess(input_list)
-            self.user_output[self.output_offset+i] = self.line_format\
+            self.user_output[i] = self.line_format\
                 .format(
                     i+1,
                     self._analyse_results(game_output["outcome"]["analysis"]),
@@ -168,8 +178,11 @@ class Game:
         print("{}".format(finish_message))
 
     def _show_analysis(self):
+        print(self.user_output_header)
+        print(self.user_output_try)
         for line in self.user_output:
             print(line)
+        print(self.user_output_footer)
 
     def _analyse_results(self, game_analysis):
         output_string = ""
