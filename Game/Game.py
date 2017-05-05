@@ -178,11 +178,15 @@ class Game:
         print("{}".format(finish_message))
 
     def _show_analysis(self):
-        print(self.user_output_header)
-        print(self.user_output_try)
-        for line in self.user_output:
+        self._print_lines(self.user_output_header)
+        self._print_lines(self.user_output_try)
+        self._print_lines(self.user_output)
+        self._print_lines(self.user_output_footer)
+
+    @staticmethod
+    def _print_lines(list_of_lines):
+        for line in list_of_lines:
             print(line)
-        print(self.user_output_footer)
 
     def _analyse_results(self, game_analysis):
         output_string = ""
