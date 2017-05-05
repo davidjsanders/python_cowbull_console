@@ -110,11 +110,18 @@ class Game:
                 split_stdin = stdin.split(',')
 
                 if len(split_stdin) != self.game_digits:
-                    raise ValueError("Number of digits incorrect. ")
-                else:
-                    pass
+                    raise ValueError("Number of digits incorrect")
+
+                list_of_digits = []
+                for digit in split_stdin:
+                    _digit = int(digit)
+                    if _digit < 0 or _digit > 9:
+                        raise ValueError("Digit out of range (0-9)")
+                    list_of_digits.append(_digit)
+                return_list = list_of_digits
+                break
             except ValueError as ve:
-                print("{}. You must enter exactly {} digits, e.g. 1, 0, 3, 2"
+                print("{}. You must enter exactly {} digits (from 0 to 9), e.g. 1, 0, 7, 9"
                       .format(str(ve), self.game_digits))
             except Exception as e:
                 print("Exception! {}".format(repr(e)))
