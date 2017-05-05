@@ -127,7 +127,7 @@ class Game:
                 .format(
                     i+1,
                     self._analyse_results(game_output["outcome"]["analysis"]),
-                    str(input_list).replace('[','').replace(']', '')
+                    str(input_list).replace('[', '').replace(']', '')
                 )
             _ = os.system('clear')
             self._show_analysis()
