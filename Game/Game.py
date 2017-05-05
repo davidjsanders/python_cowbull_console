@@ -112,7 +112,7 @@ class Game:
               .format(game_server))
 
     def play_game(self):
-        print("\x1b[2j\c1b[H")
+        _=os.system('clear')
         for i in range(0, self.game_tries):
             input_list = self._get_input()
             if not input_list:
