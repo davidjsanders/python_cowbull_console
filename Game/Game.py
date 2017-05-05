@@ -98,6 +98,8 @@ class Game:
     def play_game(self):
         for i in range(0, self.game_tries):
             input_list = self._get_input()
+            if not input_list:
+                break
             analysis = self._make_guess(input_list)
             print(analysis)
 
