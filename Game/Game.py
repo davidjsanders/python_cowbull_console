@@ -122,7 +122,7 @@ class Game:
                 for digit in split_stdin:
                     _digit = int(digit)
                     if _digit < 0 or _digit > 9:
-                        raise ValueError("Digit out of range (0-9)")
+                        raise ValueError("{} is out of range (0-9)".format(_digit))
                     list_of_digits.append(_digit)
                 return_list = list_of_digits
                 break
