@@ -168,7 +168,7 @@ class Game:
         # Setup the header for the correct number of digits required depending
         # upon the game mode.
         digits_needed = \
-            " "+str([str(i+1)+"|" for i in range(0, self.game_digits)])\
+            " "+str(self._list_of_string_digits())\
             .replace('[','')\
                 .replace(']','')\
                 .replace(',','')\
@@ -178,6 +178,12 @@ class Game:
         self.user_output = []
         for i in range(0, self.game_tries):
             self.user_output.append("  {:2d}|".format(i+1))
+
+    def _list_of_digits(self):
+        return [i for i in range(0, self.game_digits)]
+
+    def _list_of_string_digits(self):
+        return [str(i+1)+"|" for i in range(0, self.game_digits)]
 
     def _show_analysis(self):
         self._print_lines(self.user_output_header)
@@ -232,7 +238,7 @@ class Game:
 
     def _get_input(self):
         return_list = []
-        default_answer = [0, 1, 2, 3]
+        default_answer = self._list_of_digits()
 
         while True:
             stdin = input(
