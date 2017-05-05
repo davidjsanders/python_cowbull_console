@@ -29,7 +29,7 @@ class Game:
         self.user_output = [
             "Game Analysis",
             "",
-            "Try|1 2 3 4   |Your guess",
+            "Try|1 2 3 4    |Your guess",
             "-"*78,
             "",
             "",
