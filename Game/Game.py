@@ -45,7 +45,8 @@ class Game:
         print(self.welcome_msg)
         print()
 
-    def want_to_play(self):
+    @staticmethod
+    def want_to_play():
         while True:
             answer = input("Do you want to play? (Yes/No) ")
             if answer.lower() in ['yes', 'y', 'no', 'n']:
