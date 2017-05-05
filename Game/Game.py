@@ -117,7 +117,12 @@ class Game:
             if not input_list:
                 break
             game_output = self._make_guess(input_list)
-            self.user_output[2+i] = "{:2d} |{}".format(i, self._analyse_results(game_output["outcome"]["analysis"]))
+            self.user_output[2+i] = "{:2d} |{}   {}"\
+                .format(
+                    i,
+                    self._analyse_results(game_output["outcome"]["analysis"]),
+                    input_list
+                )
             for line in self.user_output:
                 print(line)
 
