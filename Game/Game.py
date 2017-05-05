@@ -69,8 +69,12 @@ class Game:
             return False
 
     def choose_a_mode(self):
+        default_choice = "normal"
+
         while True:
-            answer = input("Do you want to play normal, easy, or hard mode? ")
+            answer = input("Do you want to play normal, easy, or hard mode? [{}]: ".format(default_choice))
+            if answer == "":
+                answer = default_choice
             if answer.lower() in ["normal", "easy", "hard"]:
                 break
         return answer.lower()
