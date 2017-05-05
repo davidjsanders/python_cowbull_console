@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import requests
 from time import sleep
@@ -42,22 +43,25 @@ class Game:
         try_limit = 3
 
         while try_count < try_limit:
+            timeout = 5 * (try_count + 1)
             try:
-                print("Connecting to {}".format(self.ready_url))
+                logging.debug("check_ready: Connecting to readiness URL: {}".format(self.ready_url))
                 r = requests.get(url=self.ready_url)
                 if r.status_code != 200:
                     raise ValueError("The cowbull game is not ready: {}.".format(r.status_code))
                 return_status = True
                 break
             except requests.ConnectionError as ce:
-                print("Connection failed. Re-trying in {} seconds...".format(5 * (try_count + 1)))
+                logging.debug("check_ready: ConnectionError: {}".format(str(ce)))
+                print("Connection failed. Re-trying in {} seconds...".format(timeout))
             except ValueError as ve:
-                print("{} Re-trying in {} seconds...".format(str(ve), 5 * (try_count + 1)))
+                logging.debug("check_ready: ConnectionError: {}".format(str(ve)))
+                print("{} Re-trying in {} seconds...".format(str(ve), timeout))
             except Exception as e:
-                print()
+                logging.debug("check_ready: Exception: {}".format(repr(e)))
                 print("An unexpected error occurred! {}".format(repr(e)))
                 break
-            sleep(5 * (try_count + 1))
+            sleep(timeout)
             try_count += 1
 
         return return_status
