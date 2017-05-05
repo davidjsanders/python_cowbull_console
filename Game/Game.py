@@ -39,11 +39,11 @@ class Game:
 
         while try_count < 5:
             try:
-                print("Trying to connect to the cowbull game server...")
                 r = requests.post(url=self.game_url)
                 return_status = True
                 break
             except requests.ConnectionError as ce:
+                print("Connectiong failed. Re-trying in 2 seconds...")
                 sleep(2)
                 pass
             except Exception as e:
