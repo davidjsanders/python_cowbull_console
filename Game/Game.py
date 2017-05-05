@@ -154,7 +154,7 @@ class Game:
                 output_string += "x"
 
             if analysis_record["multiple"]:
-                output_string = chr(27) + "[1m" + output_string + chr(27) + "[0m"
+                output_string = chr(27) + "[1m" + output_string + "" + chr(27) + "[0m"
 
             output_string += " |"
 
