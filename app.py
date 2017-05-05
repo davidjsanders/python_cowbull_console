@@ -21,7 +21,15 @@ def play(game):
         return
 
     game_object = game.get_game()
-    print("Game returned was: {}".format(game_object))
+    if game_object == {}:
+        print("Sorry, but for some reason no game object was returned.")
+        return
+
+    game_digits = game_object.get("digits", 0)
+    game_tries = game_object.get("guesses", 0)
+    game_server = game_object.get("server", None)
+    print("You have {} guesses to guess {} digits. The game was served by {}"\
+          .format(game_tries, game_digits, game_server))
 
 
 if __name__ == "__main__":
