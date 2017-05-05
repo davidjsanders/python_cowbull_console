@@ -179,7 +179,7 @@ class Game:
 
     def _show_analysis(self):
         self._print_lines(self.user_output_header)
-        self._print_lines(self.user_output_try)
+        print(self.user_output_try)
         self._print_lines(self.user_output)
         self._print_lines(self.user_output_footer)
 
