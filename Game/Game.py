@@ -37,27 +37,7 @@ class Game:
             "-" * 78,
             ""
         ]
-
-#        self.user_output = [
-#            "Game Analysis: x (miss), * (Bull), - (Cow), " + chr(27) + "[1mbold" + chr(27) +"[0m (multiple)",
-#            "-"*78,
-#            "",
-#            "Try | 1| 2| 3| 4|      | Your guesses",
-#            "-"*78,
-#            "",
-#            "",
-#            "",
-#            "",
-#            "",
-#            "",
-#            "",
-#            "",
-#            "",
-#            "",
-#            "-"*78,
-#            ""
-#        ]
-        self.line_format = "  {:2d}| {}     | {}"
+        self.line_format = "  {:2d}| {} | {}"
         self.output_offset = 5
 
     def instructions(self):
@@ -174,7 +154,7 @@ class Game:
                 .replace(',','')\
                 .replace("'",'')
 
-        self.user_output_try = "Try |{}      | Your guesses".format(digits_needed)
+        self.user_output_try = "Try |{} | Your guesses".format(digits_needed)
         self.user_output = []
         for i in range(0, self.game_tries):
             self.user_output.append("  {:2d}|".format(i+1))
