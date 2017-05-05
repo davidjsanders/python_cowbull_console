@@ -132,3 +132,5 @@ class Game:
                       .format(str(ve), self.game_digits))
             except Exception as e:
                 print("Exception! {}".format(repr(e)))
+
+        return return_list
