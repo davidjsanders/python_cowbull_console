@@ -180,6 +180,7 @@ class Game:
     def _show_analysis(self):
         self._print_lines(self.user_output_header)
         print(self.user_output_try)
+        print('-'*78)
         self._print_lines(self.user_output)
         self._print_lines(self.user_output_footer)
 
