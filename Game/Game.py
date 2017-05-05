@@ -22,6 +22,7 @@ class Game:
         self.ready_url = "{}/ready".format(self.core_url)
         self.health_url = "{}/health".format(self.core_url)
         self.game = None
+        self.game_key = None
         self.game_digits = None
         self.game_tries = None
         self.guesses = []
@@ -83,6 +84,7 @@ class Game:
             pass
 
         # TODO Error Check return data
+        self.game_key = self.game.get("key", None)
         self.game_digits = self.game.get("digits", 0)
         self.game_tries = self.game.get("guesses", 0)
         game_server = self.game.get("served-by", None)
@@ -96,7 +98,26 @@ class Game:
     def play_game(self):
         for i in range(0, self.game_tries):
             input_list = self._get_input()
-            print(input_list)
+            analysis = self._make_guess(input_list)
+            print(analysis)
+
+    def _make_guess(self, digits):
+        payload = {
+            "key": self.game_key,
+            "digits": digits
+        }
+        headers = {
+            "Content-type": "application/json"
+        }
+        response_data = None
+
+        try:
+            r = requests.post(url=self.game_url, json=payload, headers=headers)
+            response_data = r.json()
+        except Exception as e:
+            print(repr(e))
+
+        return response_data
 
     def _get_input(self):
         return_list = []
