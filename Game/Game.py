@@ -27,7 +27,7 @@ class Game:
         self.game_tries = None
         self.guesses = []
         self.user_output = [
-            "1 2 3 4",
+            "   |1 2 3 4",
             "-"*78,
             "",
             "",
@@ -117,8 +117,9 @@ class Game:
             if not input_list:
                 break
             game_output = self._make_guess(input_list)
-            analysis = self._analyse_results(game_output["outcome"]["analysis"])
-            print(analysis)
+            self.user_output[2+i] = self._analyse_results(game_output["outcome"]["analysis"])
+            for line in self.user_output:
+                print(line)
 
     def _analyse_results(self, game_analysis):
         output_string = ""
