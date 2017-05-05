@@ -75,9 +75,18 @@ class Game:
         default_choice = "normal"
 
         while True:
-            answer = input("Do you want to play normal, easy, or hard mode? [{}]: ".format(default_choice))
+            answer = input("You can play in normal, easy, or hard mode? Type ? for help [{}]: ".format(default_choice))
             if answer == "":
                 answer = default_choice
+            if answer == "?":
+                print()
+                print(
+                    "The three modes of play provide different combinations of digits to guess "
+                    "and the number of guesses you are allowed to make. Normal provides the "
+                    "standard, hard is more digits and less goes, while easy is less digits "
+                    "and more chances to guess."
+                )
+                print()
             if answer.lower() in ["normal", "easy", "hard"]:
                 break
         return answer.lower()
