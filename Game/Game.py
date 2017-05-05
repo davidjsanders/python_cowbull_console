@@ -115,6 +115,7 @@ class Game:
               .format(game_server))
 
     def play_game(self):
+        finish_message = ""
         _=os.system('clear')
         self._show_analysis()
         for i in range(0, self.game_tries):
@@ -130,6 +131,12 @@ class Game:
                 )
             _ = os.system('clear')
             self._show_analysis()
+            status = game_output.get("status")
+            if status in ["won", "lost"]:
+                finish_message = game_output["outcome"]["message"]
+                break
+        print()
+        print("{}".format(finish_message))
 
     def _show_analysis(self):
         for line in self.user_output:
