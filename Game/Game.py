@@ -104,9 +104,7 @@ class Game:
             mode = "normal"
         r = None
         try:
-            print("Playing {} mode".format(self.game_url+"?{}".format(mode)))
-            input("Hit return to continue...")
-            r = requests.get(self.game_url+"?{}".format(mode))
+            r = requests.get(self.game_url+"?mode={}".format(mode))
         except requests.ConnectionError as ce:
             pass
 
