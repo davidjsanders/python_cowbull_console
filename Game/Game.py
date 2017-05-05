@@ -115,7 +115,7 @@ class Game:
               .format(game_server))
 
     def play_game(self):
-        finish_message = ""
+        finish_message = "Okay, thanks for playing!"
         _=os.system('clear')
         self._show_analysis()
         for i in range(0, self.game_tries):
