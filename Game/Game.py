@@ -30,7 +30,7 @@ class Game:
             "Game Analysis: x (miss), * (Bull), - (Cow), " + chr(27) + "[1mbold" + chr(27) +"[0m (multiple)",
             "-"*78,
             "",
-            "Try | 1| 2| 3| 4|    | Your guesses",
+            "Try | 1| 2| 3| 4|      | Your guesses",
             "-"*78,
             "",
             "",
