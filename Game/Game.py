@@ -29,7 +29,7 @@ class Game:
         self.user_output = [
             "Game Analysis: x (miss), * (Bull), - (Cow), " + chr(27) + "[1mbold" + chr(27) +"[0m (multiple)",
             "",
-            "Try|1 2 3 4    |Your guesses",
+            "Try|1 |2 |3 |4    |Your guesses",
             "-"*78,
             "",
             "",
@@ -147,14 +147,16 @@ class Game:
 
         for analysis_record in game_analysis:
             if analysis_record["match"]:
-                output_string += "*|"
+                output_string += "*"
             elif analysis_record["in_word"]:
-                output_string += "-|"
+                output_string += "-"
             else:
-                output_string += "x|"
+                output_string += "x"
 
             if analysis_record["multiple"]:
                 output_string = chr(27) + "[1m" + output_string + chr(27) + "[0m"
+
+            output_string += " |"
 
         return output_string
 
