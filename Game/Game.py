@@ -102,7 +102,7 @@ class Game:
 
         while True:
             stdin = input(
-                "Enter {} digits (0-9) separated by commas or quit: {}"
+                "Enter {} digits (0-9) separated by commas or quit {}: "
                     .format(self.game_digits, default_answer)
             )
             if stdin == "":
