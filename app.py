@@ -19,6 +19,8 @@ def play(game):
         return
 
     mode = game.choose_a_mode()
+    print("Playing {} mode".format(mode))
+    input("Hit return to continue...")
     game.get_game(mode=mode)
     game.play_game()
 
