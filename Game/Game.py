@@ -132,6 +132,7 @@ class Game:
             _ = os.system('clear')
             self._show_analysis()
             status = game_output.get("status")
+            print("Status is {}".format(status))
             if status in ["won", "lost"]:
                 finish_message = game_output["outcome"]["message"]
                 break
