@@ -28,6 +28,7 @@ class Game:
         self.guesses = []
         self.user_output = [
             "Game Analysis: x (miss), * (Bull), - (Cow), " + chr(27) + "[1mbold" + chr(27) +"[0m (multiple)",
+            "-"*78,
             "",
             "Try | 1| 2| 3| 4|   | Your guesses",
             "-"*78,
@@ -44,7 +45,7 @@ class Game:
             "-"*78,
             ""
         ]
-        self.output_offset = 4
+        self.output_offset = 5
 
     def instructions(self):
         print()
