@@ -24,6 +24,7 @@ class Game:
         self.game = None
         self.game_digits = None
         self.game_tries = None
+        self.guesses = []
 
     def instructions(self):
         print()
@@ -87,5 +88,33 @@ class Game:
         game_server = self.game.get("served-by", None)
 
         print()
-        print("Okay, let's start! You have {} guesses to guess {} digits. The game was served by {}"
-              .format(self.game_tries, self.game_digits, game_server))
+        print("Okay, let's start! You have {} guesses to guess {} digits."
+              .format(self.game_tries, self.game_digits))
+        print("The game was initially served by {}"
+              .format(game_server))
+
+    def play_game(self):
+        pass
+
+    def _get_input(self):
+        return_list = []
+
+        while True:
+            stdin = input(
+                "Enter {} digits (0-9) separated by commas or quit."
+            )
+            if stdin.lower() == "quit":
+                break
+
+            try:
+                split_stdin = stdin.split(',')
+
+                if len(split_stdin) != self.game_digits:
+                    raise ValueError("Number of digits incorrect. ")
+                else:
+                    pass
+            except ValueError as ve:
+                print("{}. You must enter exactly {} digits, e.g. 1, 0, 3, 2"
+                      .format(str(ve), self.game_digits))
+            except Exception as e:
+                print("Exception! {}".format(repr(e)))
