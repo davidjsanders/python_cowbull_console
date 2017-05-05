@@ -101,6 +101,7 @@ class Game:
 
     def get_game(self, mode=None):
         if mode is None:
+            print("Setting default mode!")
             mode = "normal"
         r = None
         try:
