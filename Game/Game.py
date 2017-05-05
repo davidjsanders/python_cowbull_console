@@ -140,23 +140,10 @@ class Game:
     def play_game(self):
         finish_message = "Okay, thanks for playing!"
 
-        # Setup the header for the correct number of digits required depending
-        # upon the game mode.
-        digits_needed = \
-            " "+str([str(i+1)+"|" for i in range(0, self.game_digits)])\
-            .replace('[','')\
-                .replace(']','')\
-                .replace(',','')\
-                .replace("'",'')
-
-        self.user_output_try = "Try |{}      | Your guesses".format(digits_needed)
-        self.user_output = []
-        for i in range(0, self.game_tries):
-            self.user_output.append("  {:2d}|".format(i+1))
-
         _=os.system('clear')
-
+        self._setup_header()
         self._show_analysis()
+
         for i in range(0, self.game_tries):
             input_list = self._get_input()
             if not input_list:
@@ -176,6 +163,21 @@ class Game:
                 break
         print()
         print("{}".format(finish_message))
+
+    def _setup_header(self):
+        # Setup the header for the correct number of digits required depending
+        # upon the game mode.
+        digits_needed = \
+            " "+str([str(i+1)+"|" for i in range(0, self.game_digits)])\
+            .replace('[','')\
+                .replace(']','')\
+                .replace(',','')\
+                .replace("'",'')
+
+        self.user_output_try = "Try |{}      | Your guesses".format(digits_needed)
+        self.user_output = []
+        for i in range(0, self.game_tries):
+            self.user_output.append("  {:2d}|".format(i+1))
 
     def _show_analysis(self):
         self._print_lines(self.user_output_header)
