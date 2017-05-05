@@ -65,6 +65,7 @@ while True:
         break
 
     game_info = response_data.get("game", {})
+    server_info = response_data.get("served-by", "unknown")
     status = game_info.get("status", None)
 
     if status.lower() in ["lost", "won"]:
@@ -92,6 +93,7 @@ while True:
         else:
             output_string += " "
     print()
+    print("Game analysis served by {}".format(server_info))
     print("You have {} bulls and {} cows.".format(game_analysis["bulls"], game_analysis["cows"]))
     print()
     print("{}".format(header_string))
