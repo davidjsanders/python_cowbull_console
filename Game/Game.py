@@ -29,7 +29,7 @@ class Game:
         self.user_output = [
             "Game Analysis: x (miss), * (Bull), - (Cow), " + chr(27) + "[1mbold" + chr(27) +"[0m (multiple)",
             "",
-            "Try|1 |2 |3 |4    |Your guesses",
+            "Try | 1| 2| 3| 4   | Your guesses",
             "-"*78,
             "",
             "",
@@ -123,7 +123,7 @@ class Game:
             if not input_list:
                 break
             game_output = self._make_guess(input_list)
-            self.user_output[self.output_offset+i] = "{:2d} |{}   |{}"\
+            self.user_output[self.output_offset+i] = "  {:2d}|{}   | {}"\
                 .format(
                     i+1,
                     self._analyse_results(game_output["outcome"]["analysis"]),
