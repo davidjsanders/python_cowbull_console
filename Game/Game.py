@@ -140,7 +140,7 @@ class Game:
         self.user_output[3] = "Try |{}      | Your guesses".format(digits_needed)
         if self.game_tries < len(self.user_output) - 10:
             start = self.game_tries + self.output_offset
-            for i in range(start, len(self.user_output)):
+            for i in range(start, len(self.user_output) - 1):
                 print("Removing {}".format(i))
                 del(self.user_output[i])
 
