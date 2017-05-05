@@ -125,6 +125,7 @@ class Game:
                     self._analyse_results(game_output["outcome"]["analysis"]),
                     input_list
                 )
+            _ = os.system('clear')
             self._show_analysis()
 
     def _show_analysis(self):
