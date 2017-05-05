@@ -12,15 +12,27 @@ class Game:
                    "your guesses: * is a bull (the right number in the right place), - (" \
                    "the right number in the wrong place), x is a miss, and any of the other " \
                    "symbols followed with + means that the number occurs more than once."
+    game_server = {
+        "host": "localhost",
+        "port": 5000,
+        "version": "v0_1"
+    }
 
     def __init__(self):
-        self.host_url = os.getenv("cowbull_host", "localhost")
-        self.host_port = os.getenv("cowbull_port", 5000)
-        self.host_ver = os.getenv("cowbull_version", "v0_1")
-        self.core_url = "http://{}:{}/{}".format(self.host_url, self.host_port, self.host_ver)
+        self.game_server["host"] = os.getenv("cowbull_host", "localhost")
+        self.game_server["port"] = os.getenv("cowbull_port", 5000)
+        self.game_server["version"] = os.getenv("cowbull_version", "v0_1")
+
+        self.core_url = "http://{}:{}/{}".format(
+            self.game_server["host"],
+            self.game_server["port"],
+            self.game_server["version"]
+        )
+
         self.game_url = "{}/game".format(self.core_url)
         self.ready_url = "{}/ready".format(self.core_url)
         self.health_url = "{}/health".format(self.core_url)
+
         self.game = None
         self.game_key = None
         self.game_digits = None
