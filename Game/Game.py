@@ -16,7 +16,10 @@ class Game:
         self.host_url = os.getenv("cowbull_host", "localhost")
         self.host_port = os.getenv("cowbull_port", 5000)
         self.host_ver = os.getenv("cowbull_version", "v0_1")
-        self.game_url = "http://{}:{}/{}/game".format(self.host_url, self.host_port, self.host_ver)
+        self.core_url = "http://{}:{}/{}/".format(self.host_url, self.host_port, self.host_ver)
+        self.game_url = "{}/game".format(self.core_url)
+        self.ready_url = "{}/ready".format(self.core_url)
+        self.health_url = "{}/health".format(self.core_url)
 
     def instructions(self):
         print()
@@ -33,24 +36,33 @@ class Game:
         else:
             return False
 
-    def check_server_ready(self):
+    def check_ready(self):
         return_status = False
         try_count = 0
         try_limit = 3
 
         while try_count < try_limit:
             try:
-                r = requests.post(url=self.game_url)
+                r = requests.post(url=self.ready_url)
+                if r.status_code != 202:
+                    raise ValueError("The cowbull game is not ready.")
                 return_status = True
                 break
             except requests.ConnectionError as ce:
-                print("Connectiong failed. Re-trying in {} seconds...".format(5 * (try_count + 1)))
-                sleep(5 * (try_count + 1))
-                pass
+                print("Connection failed. Re-trying in {} seconds...".format(5 * (try_count + 1)))
+            except ValueError as ve:
+                print("{} Re-trying in {} seconds...".format(str(ve), 5 * (try_count + 1)))
             except Exception as e:
                 print()
                 print("An unexpected error occurred! {}".format(repr(e)))
                 break
+            sleep(5 * (try_count + 1))
             try_count += 1
 
         return return_status
+
+    def get_game(self):
+        try:
+            pass
+        except requests.ConnectionError as ce:
+            pass
