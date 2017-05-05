@@ -138,8 +138,8 @@ class Game:
                 .replace("'",'')
 
         self.user_output[3] = "Try |{}      | Your guesses".format(digits_needed)
-        if self.guesses < len(self.user_output) - 10:
-            start = self.guesses + self.output_offset
+        if self.game_tries < len(self.user_output) - 10:
+            start = self.game_tries + self.output_offset
             for i in range(start, len(self.user_output)):
                 del(self.user_output[i])
 
