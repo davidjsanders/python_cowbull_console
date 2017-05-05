@@ -22,6 +22,8 @@ class Game:
         self.ready_url = "{}/ready".format(self.core_url)
         self.health_url = "{}/health".format(self.core_url)
         self.game = None
+        self.game_digits = None
+        self.game_tries = None
 
     def instructions(self):
         print()
@@ -68,16 +70,22 @@ class Game:
         return return_status
 
     def get_game(self):
+        r = None
         try:
             r = requests.get(self.game_url)
-            self.game = r.json()
-            # TODO Error Check return data
         except requests.ConnectionError as ce:
             pass
 
-    def show_start_info(self):
-        game_digits = self.game.get("digits", 0)
-        game_tries = self.game.get("guesses", 0)
+        try:
+            self.game = r.json()
+        except requests.ConnectionError as ce:
+            pass
+
+        # TODO Error Check return data
+        self.game_digits = self.game.get("digits", 0)
+        self.game_tries = self.game.get("guesses", 0)
         game_server = self.game.get("served-by", None)
+
+        print()
         print("Okay, let's start! You have {} guesses to guess {} digits. The game was served by {}"
-              .format(game_tries, game_digits, game_server))
+              .format(self.game_tries, self.game_digits, game_server))
