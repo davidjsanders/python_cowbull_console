@@ -45,7 +45,7 @@ class Game:
             try:
                 r = requests.post(url=self.ready_url)
                 if r.status_code != 200:
-                    raise ValueError("The cowbull game is not ready.")
+                    raise ValueError("The cowbull game is not ready: {}.".format(r.status_code))
                 return_status = True
                 break
             except requests.ConnectionError as ce:
