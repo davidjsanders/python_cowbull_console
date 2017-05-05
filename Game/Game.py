@@ -154,7 +154,7 @@ class Game:
                 .replace(',','')\
                 .replace("'",'')
 
-        self.user_output_try = "Try |{}   | Your guesses".format(digits_needed)
+        self.user_output_try = "Try |{}  | Your guesses".format(digits_needed)
         self.user_output = []
         for i in range(0, self.game_tries):
             self.user_output.append("  {:2d}|".format(i+1))
