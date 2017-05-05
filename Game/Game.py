@@ -67,7 +67,10 @@ class Game:
         return return_status
 
     def get_game(self):
+        return_data = {}
         try:
-            pass
+            r = requests.get(self.game_url)
+            return_data = r.json()
         except requests.ConnectionError as ce:
             pass
+        return return_data

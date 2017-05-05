@@ -20,7 +20,8 @@ def play(game):
               "please come back later. The issue has been logged.")
         return
 
-
+    game_object = game.get_game()
+    print("Game returned was: {}".format(game_object))
 
 
 if __name__ == "__main__":
