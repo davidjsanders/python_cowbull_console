@@ -27,7 +27,7 @@ class Game:
         self.game_tries = None
         self.guesses = []
         self.user_output = [
-            "Game Analysis",
+            "Game Analysis: x (miss), * (Bull), - (Cow), " + chr(27) + "[1mbold" + chr(27) +"[0m (multiple)",
             "",
             "Try|1 2 3 4    |Your guesses",
             "-"*78,
