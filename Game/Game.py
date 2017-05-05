@@ -27,6 +27,8 @@ class Game:
         self.game_tries = None
         self.guesses = []
         self.user_output = [
+            "Game Analysis",
+            "",
             "   |1 2 3 4",
             "-"*78,
             "",
@@ -42,6 +44,7 @@ class Game:
             "-"*78,
             ""
         ]
+        self.output_offset = 4
 
     def instructions(self):
         print()
@@ -119,7 +122,7 @@ class Game:
             if not input_list:
                 break
             game_output = self._make_guess(input_list)
-            self.user_output[2+i] = "{:2d} |{}   {}"\
+            self.user_output[self.output_offset+i] = "{:2d} |{}   {}"\
                 .format(
                     i+1,
                     self._analyse_results(game_output["outcome"]["analysis"]),
