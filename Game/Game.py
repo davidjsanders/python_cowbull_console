@@ -44,7 +44,7 @@ class Game:
         while try_count < try_limit:
             try:
                 print("Connecting to {}".format(self.ready_url))
-                r = requests.post(url=self.ready_url)
+                r = requests.get(url=self.ready_url)
                 if r.status_code != 200:
                     raise ValueError("The cowbull game is not ready: {}.".format(r.status_code))
                 return_status = True
