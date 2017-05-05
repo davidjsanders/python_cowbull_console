@@ -134,7 +134,7 @@ class Game:
             self._show_analysis()
             status = game_output["game"]["status"]
             if status in ["won", "lost"]:
-                finish_message = game_output["outcome"]["message"]
+                finish_message = game_output["outcome"]["message"].replace('[','').replace(']','')
                 break
         print()
         print("{}".format(finish_message))
