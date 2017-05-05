@@ -29,7 +29,7 @@ class Game:
         self.user_output = [
             "Game Analysis",
             "",
-            "   |1 2 3 4",
+            "Try|1 2 3 4   |Your guess",
             "-"*78,
             "",
             "",
@@ -123,7 +123,7 @@ class Game:
             if not input_list:
                 break
             game_output = self._make_guess(input_list)
-            self.user_output[self.output_offset+i] = "{:2d} |{}   {}"\
+            self.user_output[self.output_offset+i] = "{:2d} |{}   |{}"\
                 .format(
                     i+1,
                     self._analyse_results(game_output["outcome"]["analysis"]),
@@ -132,7 +132,6 @@ class Game:
             _ = os.system('clear')
             self._show_analysis()
             status = game_output["game"]["status"]
-            print("Status is {}".format(status))
             if status in ["won", "lost"]:
                 finish_message = game_output["outcome"]["message"]
                 break
