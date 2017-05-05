@@ -98,11 +98,16 @@ class Game:
 
     def _get_input(self):
         return_list = []
+        default_answer = [0, 1, 2, 3]
 
         while True:
             stdin = input(
-                "Enter {} digits (0-9) separated by commas or quit."
+                "Enter {} digits (0-9) separated by commas or quit: {}".format(default_answer)
             )
+            if stdin == "":
+                return_list = default_answer
+                break
+
             if stdin.lower() == "quit":
                 break
 
