@@ -147,11 +147,11 @@ class Game:
 
         for analysis_record in game_analysis:
             if analysis_record["match"]:
-                output_string += "*"
+                output_string += "*|"
             elif analysis_record["in_word"]:
-                output_string += "-"
+                output_string += "-|"
             else:
-                output_string += "x"
+                output_string += "x|"
 
             if analysis_record["multiple"]:
                 output_string = chr(27) + "[1m" + output_string + chr(27) + "[0m"
