@@ -59,8 +59,11 @@ class Game:
 
     @staticmethod
     def want_to_play():
+        default_choice = "yes"
         while True:
-            answer = input("Do you want to play? (Yes/No) ")
+            answer = input("Do you want to play? Please answer yes or no [{}]: ")
+            if answer == "":
+                answer = default_choice
             if answer.lower() in ['yes', 'y', 'no', 'n']:
                 break
         if answer.lower() in ["yes", "y"]:
