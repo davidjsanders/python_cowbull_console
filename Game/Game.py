@@ -43,8 +43,8 @@ class Game:
                 return_status = True
                 break
             except requests.ConnectionError as ce:
-                print("Connectiong failed. Re-trying in 2 seconds...")
-                sleep(2)
+                print("Connectiong failed. Re-trying in {} seconds...".format(2 * (try_count + 1)))
+                sleep(2 * (try_count + 1))
                 pass
             except Exception as e:
                 print()
