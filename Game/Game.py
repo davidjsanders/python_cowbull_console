@@ -16,7 +16,7 @@ class Game:
         self.host_url = os.getenv("cowbull_host", "localhost")
         self.host_port = os.getenv("cowbull_port", 5000)
         self.host_ver = os.getenv("cowbull_version", "v0_1")
-        self.core_url = "http://{}:{}/{}/".format(self.host_url, self.host_port, self.host_ver)
+        self.core_url = "http://{}:{}/{}".format(self.host_url, self.host_port, self.host_ver)
         self.game_url = "{}/game".format(self.core_url)
         self.ready_url = "{}/ready".format(self.core_url)
         self.health_url = "{}/health".format(self.core_url)
@@ -43,6 +43,7 @@ class Game:
 
         while try_count < try_limit:
             try:
+                print("Connecting to {}".format(self.ready_url))
                 r = requests.post(url=self.ready_url)
                 if r.status_code != 200:
                     raise ValueError("The cowbull game is not ready: {}.".format(r.status_code))
