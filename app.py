@@ -18,7 +18,8 @@ def play(game):
               "please come back later. The issue has been logged.")
         return
 
-    game.get_game()
+    mode = game.choose_a_mode()
+    game.get_game(mode=mode)
     game.play_game()
 
 

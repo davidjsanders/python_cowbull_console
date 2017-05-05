@@ -63,6 +63,13 @@ class Game:
         else:
             return False
 
+    def choose_a_mode(self):
+        while True:
+            answer = input("Do you want to play normal, easy, or hard mode? ")
+            if answer.lower() in ["normal", "easy", "hard"]:
+                break
+        return answer.lower()
+
     def check_ready(self):
         return_status = False
         try_count = 0
@@ -92,10 +99,12 @@ class Game:
 
         return return_status
 
-    def get_game(self):
+    def get_game(self, mode=None):
+        if mode is None:
+            mode = "normal"
         r = None
         try:
-            r = requests.get(self.game_url)
+            r = requests.get(self.game_url+"?{}".format(mode))
         except requests.ConnectionError as ce:
             pass
 
