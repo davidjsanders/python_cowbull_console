@@ -27,7 +27,7 @@ def play(game):
 
     game_digits = game_object.get("digits", 0)
     game_tries = game_object.get("guesses", 0)
-    game_server = game_object.get("server", None)
+    game_server = game_object.get("served-by", None)
     print("You have {} guesses to guess {} digits. The game was served by {}"\
           .format(game_tries, game_digits, game_server))
 
