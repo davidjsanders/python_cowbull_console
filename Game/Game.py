@@ -115,8 +115,8 @@ class Game:
 
         # TODO Error Check return data
         self.game_key = self.game.get("key", None)
-        self.game_digits = self.game.get("digits", 0)
-        self.game_tries = self.game.get("guesses", 0)
+        self.game_digits = int(self.game.get("digits", 0))
+        self.game_tries = int(self.game.get("guesses", 0))
         game_server = self.game.get("served-by", None)
 
         print()
@@ -127,6 +127,11 @@ class Game:
 
     def play_game(self):
         finish_message = "Okay, thanks for playing!"
+        # "Try | 1| 2| 3| 4|      | Your guesses"
+        self.user_output[3] = \
+            "Try " + \
+            [" "+str(i)+"|" for i in range(0, self.game_digits)] + \
+            "      | Your guesses"
         _=os.system('clear')
         self._show_analysis()
         for i in range(0, self.game_tries):
