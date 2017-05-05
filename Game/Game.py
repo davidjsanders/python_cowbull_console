@@ -128,7 +128,7 @@ class Game:
     def play_game(self):
         finish_message = "Okay, thanks for playing!"
         # "Try | 1| 2| 3| 4|      | Your guesses"
-        digits_needed = str([" "+str(i+1) for i in range(0, self.game_digits)])\
+        digits_needed = str([" "+str(i+1)+"|" for i in range(0, self.game_digits)])\
             .replace('[','').replace(']','').replace(',','').replace("'",'')
         self.user_output[3] = "Try |{}      | Your guesses".format(digits_needed)
         _=os.system('clear')
