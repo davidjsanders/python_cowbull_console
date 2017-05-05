@@ -26,6 +26,22 @@ class Game:
         self.game_digits = None
         self.game_tries = None
         self.guesses = []
+        self.user_output = [
+            "1 2 3 4",
+            "-"*78,
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "-"*78,
+            ""
+        ]
 
     def instructions(self):
         print()
@@ -100,8 +116,27 @@ class Game:
             input_list = self._get_input()
             if not input_list:
                 break
-            analysis = self._make_guess(input_list)
+            game_output = self._make_guess(input_list)
+            analysis = self._analyse_results(game_output["outcome"]["analysis"])
             print(analysis)
+
+    def _analyse_results(self, game_analysis):
+        output_string = ""
+
+        for analysis_record in game_analysis:
+            if analysis_record["match"]:
+                output_string += "*"
+            elif analysis_record["in_word"]:
+                output_string += "-"
+            else:
+                output_string += "x"
+
+            if analysis_record["multiple"]:
+                output_string += "+"
+            else:
+                output_string += " "
+
+        return output_string
 
     def _make_guess(self, digits):
         payload = {
