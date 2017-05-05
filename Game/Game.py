@@ -61,7 +61,7 @@ class Game:
     def want_to_play():
         default_choice = "yes"
         while True:
-            answer = input("Do you want to play? Please answer yes or no [{}]: ")
+            answer = input("Do you want to play? Please answer yes or no [{}]: ".format(default_choice))
             if answer == "":
                 answer = default_choice
             if answer.lower() in ['yes', 'y', 'no', 'n']:
