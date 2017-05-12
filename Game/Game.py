@@ -39,7 +39,7 @@ class Game:
         self.game_tries = None
         self.guesses = []
         self.user_output_header = [
-            "Game Analysis: x (miss), * (Bull), - (Cow), " + chr(27) + "[1mbold" + chr(27) + "[0m (multiple)",
+            "Game Analysis: x (miss), * (Bull), - (Cow), " + chr(27) + "[1m" + chr(27) + "[4mbold" + chr(27) + "[0m (multiple)",
             "-" * 78,
             ""
         ]
@@ -211,7 +211,7 @@ class Game:
 
         for analysis_record in game_analysis:
             if analysis_record["multiple"]:
-                output_string += chr(27) + "[1m"
+                output_string += chr(27) + "[1m" + chr(27) + "[4m"
 
             if analysis_record["match"]:
                 output_string += "*"
