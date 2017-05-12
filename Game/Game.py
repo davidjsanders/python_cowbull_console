@@ -102,7 +102,7 @@ class Game:
                 logging.debug("check_ready: Connecting to readiness URL: {}".format(self.ready_url))
                 r = requests.get(url=self.ready_url)
                 if r.status_code != 200:
-                    raise ValueError("The cowbull game on {} is not ready: {}.".format(self.ready_url, r.status_code))
+                    raise ValueError("The cowbull game on server {} is not ready: {}.".format(self.ready_url, r.status_code))
                 return_status = True
                 break
             except requests.ConnectionError as ce:
