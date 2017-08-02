@@ -81,7 +81,6 @@ class Game:
             if r.status_code != 200:
                 raise ValueError("The cowbull game on server {} is not ready: {}.".format(self.ready_url, r.status_code))
             return_modes = [str(i['mode']) for i in r.json()]
-            break
         except Exception as e:
             logging.debug("check_ready: Exception: {}".format(repr(e)))
             raise
@@ -114,6 +113,7 @@ class Game:
                 print()
             elif answer.lower() in available_modes:
                 break
+
         return answer.lower()
 
     def check_ready(self):
