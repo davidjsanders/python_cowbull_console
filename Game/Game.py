@@ -30,6 +30,7 @@ class Game:
         )
 
         self.game_url = "{}/game".format(self.core_url)
+        self.modes_url = "{}/modes".format(self.core_url)
         self.ready_url = "{}/ready".format(self.core_url)
         self.health_url = "{}/health".format(self.core_url)
 
@@ -71,14 +72,38 @@ class Game:
         else:
             return False
 
+    def _get_modes(self):
+        return_modes = None
+
+        try:
+            logging.debug("get_modes: Connecting to modes URL: {}".format(self.modes_url))
+            r = requests.get(url=self.modes_url)
+            if r.status_code != 200:
+                raise ValueError("The cowbull game on server {} is not ready: {}.".format(self.ready_url, r.status_code))
+            return_modes = [str(i['mode']) for i in r.json()]
+            break
+        except Exception as e:
+            logging.debug("check_ready: Exception: {}".format(repr(e)))
+            raise
+
+        return return_modes
+
     def choose_a_mode(self):
         default_choice = "normal"
+        available_modes = self._get_modes()
+        if not available_modes:
+            raise ConnectionError('The game server returned no modes. Unable to continue playing.')
 
         while True:
-            answer = input("You can play in normal, easy, or hard mode? Type ? for help [{}]: ".format(default_choice))
+            answer = input("You can play in {} mode? Type ? for help [{}]: " \
+                           .format(
+                               ', '.join(available_modes),
+                               default_choice
+                           )
+            )
             if answer == "":
                 answer = default_choice
-            if answer == "?":
+            elif answer == "?":
                 print()
                 print(
                     "The three modes of play provide different combinations of digits to guess "
@@ -87,7 +112,7 @@ class Game:
                     "and more chances to guess."
                 )
                 print()
-            if answer.lower() in ["normal", "easy", "hard"]:
+            elif answer.lower() in available_modes:
                 break
         return answer.lower()
 
