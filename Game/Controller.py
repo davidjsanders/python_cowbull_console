@@ -71,4 +71,3 @@ class Controller(object):
         else:
             io.print_error(error_detail)
             io.print_error(error_detail="For some reason, it has not been possible to start the game. Sorry.")
-
