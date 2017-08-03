@@ -1,28 +1,36 @@
 import logging
 from Game import Game
+from Game import Helper
+from Game import IO
 
 
-def setup():
-    g = Game()
-    g.instructions()
+def main():
+    io = IO()
+    io.instructions()
 
-    if g.want_to_play():
-        play(g)
-    else:
+    if not io.want_to_play():
         print("Okay, come back soon!")
+        exit()
 
+    game = Game(io=io, helper=Helper())
 
-def play(game):
-    if not game.check_ready():
+    if not game.check_game_server_ready():
         print("Sorry, the cowbull game isn't available right now; "
               "please come back later. The issue has been logged.")
         return
 
-    mode = game.choose_a_mode()
-    game.get_game(mode=mode)
-    game.play_game()
+    modes = game.get_modes()
+    if not modes:
+        exit()
+
+    mode = io.choose_a_mode(game_modes=modes)
+    if not mode:
+        exit()
+
+    if game.get_game(mode=mode):
+        game.play_game()
 
 
 if __name__ == "__main__":
     logging.basicConfig(format="%(asctime)s %(levelname)s: %(message)s", level=logging.INFO)
-    setup()
+    main()
