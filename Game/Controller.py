@@ -13,7 +13,7 @@ class Controller(object):
 
         if not self.io.want_to_play():
             print("Okay, come back soon!")
-            return()
+            return
 
         game = Game(helper=self.helper)
 
