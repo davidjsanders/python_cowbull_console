@@ -87,7 +87,6 @@ class Helper(object):
         return_data = {}
 
         try_count = 0
-        try_limit = 3
 
         while try_count < try_limit:
             timeout = _delay * (try_count + 1)

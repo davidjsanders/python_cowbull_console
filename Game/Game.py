@@ -1,10 +1,5 @@
-import json
-import logging
 import os
-import requests
-from time import sleep
 from .Helper import Helper
-from .IO import IO
 
 
 class Game:
@@ -105,4 +100,3 @@ class Game:
             return Game.LOST, game_output
         else:
             return Game.CONTINUE, game_output
-
