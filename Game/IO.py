@@ -107,7 +107,7 @@ class IO(object):
         available_modes = [str(i['mode']) for i in game_modes]
 
         if not available_modes:
-            raise ConnectionError('The game server returned no modes. Unable to continue playing.')
+            return False, 'The game server returned no modes. Unable to continue playing.'
 
         answer = self.helper.get_input(
             prompt="What mode of game would you like to play: {}?".format(', '.join(available_modes)),
@@ -120,7 +120,7 @@ class IO(object):
                       "you're asked to guess. The names of the modes should be self-explanatory."
         )
 
-        return answer.lower()
+        return answer.lower(), None
 
     @staticmethod
     def print_error(error_detail=None):

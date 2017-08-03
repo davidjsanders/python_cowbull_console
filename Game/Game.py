@@ -8,7 +8,12 @@ from .IO import IO
 
 
 class Game:
-    def __init__(self, io=None, helper=None):
+    WON = -1
+    LOST = -2
+    ERROR = -3
+    CONTINUE = 0
+
+    def __init__(self, helper=None):
         self.game_server = dict()
         self.game_server["host"] = os.getenv("cowbull_host", "localhost")
         self.game_server["port"] = os.getenv("cowbull_port", 5000)
@@ -33,7 +38,6 @@ class Game:
         self.guesses = []
 
         self.helper = helper or Helper()
-        self.io = io or IO()
 
     def get_modes(self):
         self.game_modes, status = self.helper.get_url_json(
@@ -46,10 +50,9 @@ class Game:
         in_error, error_detail = self.helper.check_status(status, self.game_modes)
 
         if in_error:
-            self.io.print_error(error_detail)
-            return False
+            return False, error_detail
 
-        return self.game_modes
+        return self.game_modes, None
 
     def check_game_server_ready(self):
         jsondata, status = self.helper.get_url_json(url=self.ready_url, retries=3, delay_increment=5)
@@ -71,8 +74,7 @@ class Game:
         in_error, error_detail = self.helper.check_status(status, self.game)
 
         if in_error:
-            self.io.print_error(error_detail)
-            return False
+            return False, error_detail
 
         self.game_key = self.game.get("key", None)
         self.game_digits = int(self.game.get("digits", 0))
@@ -80,51 +82,27 @@ class Game:
 
         # TODO MUST ADD GAME CHECKING!
 
-        return True
+        return True, None
 
-    def play_game(self):
-        finish_message = "Okay, thanks for playing!"
+    def take_turn(self, guessed_digits=None):
+        game_output, status_code = self.helper.post_url_json(
+            url=self.game_url,
+            headers={"Content-type": "application/json"},
+            data={"key": self.game_key, "digits": guessed_digits},
+            retries=3,
+            delay_increment=5
+        )
 
-        self.io.setup_header(game_digits=self.game_digits, game_tries=self.game_tries)
-        self.io.draw_screen()
+        in_error, error_detail = self.helper.check_status(status_code, game_output)
 
-        counter = 1
+        if in_error:
+            return Game.ERROR, error_detail
 
-        while True:
-            input_list = self.io.get_input(self.game_digits)
-            if not input_list:
-                continue
-            elif input_list == [-1]:  # Capture sentinel
-                break
+        status = game_output["game"]["status"]
+        if status == "won":
+            return Game.WON, game_output
+        elif status == "lost":
+            return Game.LOST, game_output
+        else:
+            return Game.CONTINUE, game_output
 
-            game_output, status_code = self.helper.post_url_json(
-                url=self.game_url,
-                headers={"Content-type": "application/json"},
-                data={"key": self.game_key, "digits": input_list},
-                retries=3,
-                delay_increment=5
-            )
-
-            in_error, error_detail = self.helper.check_status(status_code, game_output)
-
-            if in_error:
-                self.io.print_error(error_detail)
-                continue
-
-            self.io.update_line(
-                lineno=counter,
-                result=game_output["outcome"]["analysis"],
-                numbers_input=input_list
-            )
-            self.io.draw_screen()
-
-            status = game_output["game"]["status"]
-            if status in ["won", "lost"]:
-                finish_message = game_output["outcome"]["message"]
-                break
-
-            counter += 1
-            if counter > self.game_tries:
-                break
-
-        self.io.print_finish(finish_message)
