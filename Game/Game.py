@@ -3,15 +3,16 @@ import logging
 import os
 import requests
 from time import sleep
+from .Helper import Helper
 
 
 class Game:
     welcome_msg = "Welcome to the CowBull game. The objective of this game is to guess " \
-                   "a set of four digits (numbers between 0 and 9) by entering a sequence " \
-                   "of numbers. Each time you try to guess, you will see an analysis of " \
-                   "your guesses: * is a bull (the right number in the right place), - (" \
-                   "the right number in the wrong place), x is a miss, and any of the other " \
-                   "symbols followed with + means that the number occurs more than once."
+                   "a set of digits by entering a sequence of numbers. Each time you try " \
+                   "to guess, you will see an analysis of your guesses: * is a bull (the " \
+                   "right number in the right place), - (the right number in the wrong " \
+                   "place), x is a miss. Any symbol highlighted in bold means that the " \
+                   "number occurs more than once."
     game_server = {
         "host": "localhost",
         "port": 5000,
@@ -40,7 +41,7 @@ class Game:
         self.game_tries = None
         self.guesses = []
         self.user_output_header = [
-            "Game Analysis: x (miss), * (Bull), - (Cow), " + chr(27) + "[1m" + chr(27) + "[4mbold" + chr(27) + "[0m (multiple)",
+            "Game Analysis: * (Bull), - (Cow), x (miss), " + chr(27) + "[1m" + chr(27) + "[4mbold" + chr(27) + "[0m (multiple)",
             "-" * 78,
             ""
         ]
@@ -52,22 +53,23 @@ class Game:
         ]
         self.line_format = "  {:2d}| {} | {}"
         self.output_offset = 5
+        self.helper = Helper()
 
     def instructions(self):
         print()
         print(self.welcome_msg)
         print()
 
-    @staticmethod
-    def want_to_play():
-        default_choice = "yes"
-        while True:
-            answer = input("Do you want to play? Please answer yes or no [{}]: ".format(default_choice))
-            if answer == "":
-                answer = default_choice
-            if answer.lower() in ['yes', 'y', 'no', 'n']:
-                break
-        if answer.lower() in ["yes", "y"]:
+    def want_to_play(self):
+        answer = self.helper.get_input(
+            prompt="Do you want to play?",
+            default="yes",
+            choices=["y", "ye", "yes", "n", "no"],
+            ignore_case=True,
+            help_text="You must answer y(es) or n(o) to the question. If you answer yes, "
+                      "the game will start; if you answer no, it will quit."
+        )
+        if answer in ["yes", "ye", "y"]:
             return True
         else:
             return False
@@ -80,39 +82,31 @@ class Game:
             r = requests.get(url=self.modes_url)
             if r.status_code != 200:
                 raise ValueError("The cowbull game on server {} is not ready: {}.".format(self.ready_url, r.status_code))
-            return_modes = [str(i['mode']) for i in r.json()]
+            game_modes = r.json()
+            return_modes = [str(i['mode']) for i in game_modes]
         except Exception as e:
             logging.debug("check_ready: Exception: {}".format(repr(e)))
             raise
 
-        return return_modes
+        return game_modes, return_modes
 
     def choose_a_mode(self):
         default_choice = "normal"
-        available_modes = self._get_modes()
+        self.game_modes, available_modes = self._get_modes()
+
         if not available_modes:
             raise ConnectionError('The game server returned no modes. Unable to continue playing.')
 
-        while True:
-            answer = input("You can play in {} mode? Type ? for help [{}]: " \
-                           .format(
-                               ', '.join(available_modes),
-                               default_choice
-                           )
-            )
-            if answer == "":
-                answer = default_choice
-            elif answer == "?":
-                print()
-                print(
-                    "The three modes of play provide different combinations of digits to guess "
-                    "and the number of guesses you are allowed to make. Normal provides the "
-                    "standard, hard is more digits and less goes, while easy is less digits "
-                    "and more chances to guess."
-                )
-                print()
-            elif answer.lower() in available_modes:
-                break
+        answer = self.helper.get_input(
+            prompt="What mode of game would you like to play: {}?".format(', '.join(available_modes)),
+            default=default_choice,
+            choices=available_modes,
+            ignore_case=True,
+            help_text="The modes are defined by the game server and, typically, are set to "
+                      "provide varying options like easy, normal, and hard. These vary the "
+                      "number of guesses you are allowed to make and the number of digits "
+                      "you're asked to guess. The names of the modes should be self-explanatory."
+        )
 
         return answer.lower()
 
@@ -178,14 +172,33 @@ class Game:
         self._setup_header()
         self._show_analysis()
 
-        for i in range(0, self.game_tries):
+        counter = 1
+
+        while True:
             input_list = self._get_input()
             if not input_list:
+                continue
+            elif input_list == [-1]:  # Capture sentinel
                 break
-            game_output = self._make_guess(input_list)
-            self.user_output[i] = self.line_format\
+
+            game_output, status_code = self._make_guess(input_list)
+            if status_code != 200:
+                error_message = "There's a problem with your guess: {}"
+                error_detail = "Wow! Something went wrong, but we do not know what! Please try again"
+
+                if 'exception' in game_output:
+                    error_detail = game_output["exception"]
+                elif 'message' in game_output:
+                    error_detail = game_output['message']
+                else:
+                    error_detail = "Unknown error?!?"
+
+                print(error_message.format(error_detail))
+                continue
+
+            self.user_output[counter-1] = self.line_format\
                 .format(
-                    i+1,
+                    counter,
                     self._analyse_results(game_output["outcome"]["analysis"]),
                     str(input_list).replace('[', '').replace(']', '')
                 )
@@ -195,8 +208,14 @@ class Game:
             if status in ["won", "lost"]:
                 finish_message = game_output["outcome"]["message"]
                 break
+
+            counter += 1
+            if counter > self.game_tries:
+                break
+
         print()
         print("{}".format(finish_message))
+        print()
 
     def _setup_header(self):
         # Setup the header for the correct number of digits required depending
@@ -262,47 +281,42 @@ class Game:
         }
         response_data = None
 
+        status_code = 200
         try:
             r = requests.post(url=self.game_url, json=payload, headers=headers)
+            status_code = r.status_code
             response_data = r.json()
         except Exception as e:
             print(repr(e))
 
-        return response_data
+        return response_data, status_code
 
     def _get_input(self):
         return_list = []
         default_answer = self._list_of_digits()
 
         while True:
-            stdin = input(
-                "Enter {} digits (0-9) separated by commas or quit {}: "
-                    .format(self.game_digits, default_answer)
+            stdin = self.helper.get_input(
+                prompt="Enter {} digits separated by commas or quit".format(self.game_digits),
+                ignore_case=True,
+                allow_empty=True,
+                default=','.join([str(d) for d in default_answer]),
+                help_text="You need to enter {} digits separated by commas.".format(self.game_digits)
             )
-            if stdin == "":
-                return_list = default_answer
-                break
 
             if stdin.lower() == "quit":
+                return_list = [-1]  # Sentinel to signify quit
                 break
 
             try:
-                split_stdin = stdin.split(',')
+                return_list = stdin.split(',')
 
-                if len(split_stdin) != self.game_digits:
+                if len(return_list) != self.game_digits:
                     raise ValueError("Number of digits incorrect")
 
-                list_of_digits = []
-                for digit in split_stdin:
-                    _digit = int(digit)
-                    if _digit < 0 or _digit > 9:
-                        raise ValueError("{} is out of range (0-9)".format(_digit))
-                    list_of_digits.append(_digit)
-                return_list = list_of_digits
                 break
             except ValueError as ve:
-                print("{}. You must enter exactly {} digits (from 0 to 9), e.g. 1, 0, 7, 9"
-                      .format(str(ve), self.game_digits))
+                print("{}. You must enter exactly {} digits.".format(str(ve)))
             except Exception as e:
                 print("Exception! {}".format(repr(e)))
 
