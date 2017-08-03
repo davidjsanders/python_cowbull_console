@@ -55,8 +55,8 @@ class Game:
         return self.game_modes, None
 
     def check_game_server_ready(self):
-        jsondata, status = self.helper.get_url_json(url=self.ready_url, retries=3, delay_increment=5)
-        if status == 200 and 'status' in jsondata and jsondata['status'] == "ready":
+        json_data, status = self.helper.get_url_json(url=self.ready_url, retries=3, delay_increment=5)
+        if status == 200 and 'status' in json_data and json_data['status'] == "ready":
             return True
         else:
             return False
