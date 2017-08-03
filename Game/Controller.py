@@ -13,7 +13,7 @@ class Controller(object):
 
         if not self.io.want_to_play():
             print("Okay, come back soon!")
-            exit()
+            return()
 
         game = Game(helper=self.helper)
 
@@ -25,12 +25,12 @@ class Controller(object):
         modes, error_detail = game.get_modes()
         if not modes:
             self.io.print_error(error_detail)
-            exit()
+            return()
 
         mode, error_detail = self.io.choose_a_mode(game_modes=modes)
         if not mode:
             self.io.print_error(error_detail)
-            exit()
+            return()
 
         game_status, error_detail = game.get_game(mode=mode)
         if game_status:
