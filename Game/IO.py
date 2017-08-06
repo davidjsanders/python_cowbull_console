@@ -8,7 +8,7 @@ class IO(object):
                   "a set of digits by entering a sequence of numbers. Each time you try " \
                   "to guess, you will see an analysis of your guesses: * is a bull (the " \
                   "right number in the right place), - (the right number in the wrong " \
-                  "place), x is a miss. Any symbol highlighted in " \
+                  "place), x is a miss. Any symbol underlined and highlighted in " \
                   + chr(27) + "[1m" + chr(27) + "[4mbold" + chr(27) + "[0m " \
                   "means that the number occurs more than once."
 
