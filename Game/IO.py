@@ -11,11 +11,12 @@ class IO(object):
                   "place), x is a miss. Any symbol highlighted in " \
                   + chr(27) + "[1m" + chr(27) + "[4mbold" + chr(27) + "[0m " \
                   "means that the number occurs more than once."
+
     info_msg = "This game is part of a series which shows how an API based game object " \
                "and server can be created, deployed to multiple platforms (bare metal, " \
                "Kubernetes, Google App Engine, etc.), and accessed with multiple " \
                "clients (web, console, curses, chat-bot, smartphone, etc.). The game is " \
-               "not intended to be challenging; rather to demonstrate approach.\n\n" \
+               "not intended to be challenging; rather to demonstrate approach." \
                "David Sanders, dsanderscanadaNOSPAM@gmail.com"
 
     def __init__(self):
