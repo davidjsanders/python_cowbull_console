@@ -1,4 +1,5 @@
 import os
+from textwrap import wrap
 
 
 class IO(object):
@@ -8,13 +9,13 @@ class IO(object):
                   "to guess, you will see an analysis of your guesses: * is a bull (the " \
                   "right number in the right place), - (the right number in the wrong " \
                   "place), x is a miss. Any symbol highlighted in bold means that the " \
-                  "number occurs more than once.\n\n" \
-                  "This game is part of a series which shows how an API based game object " \
-                  "and server can be created, deployed to multiple platforms (bare metal, " \
-                  "Kubernetes, Google App Engine, etc.), and accessed with multiple " \
-                  "clients (web, console, curses, chat-bot, smartphone, etc.). The game is " \
-                  "not intended to be challenging; rather to demonstrate approach.\n\n" \
-                  "David Sanders, dsanderscanadaNOSPAM@gmail.com"
+                  "number occurs more than once."
+    info_msg = "This game is part of a series which shows how an API based game object " \
+               "and server can be created, deployed to multiple platforms (bare metal, " \
+               "Kubernetes, Google App Engine, etc.), and accessed with multiple " \
+               "clients (web, console, curses, chat-bot, smartphone, etc.). The game is " \
+               "not intended to be challenging; rather to demonstrate approach.\n\n" \
+               "David Sanders, dsanderscanadaNOSPAM@gmail.com"
 
     def __init__(self):
         # Define the header - note the use of ANSI escape sequences - and the output structures
@@ -38,8 +39,15 @@ class IO(object):
 
     @staticmethod
     def instructions(instructions_text=None):
+        lineout = wrap(instructions_text or IO.welcome_msg)
         print()
-        print(instructions_text or IO.welcome_msg)
+        for line in lineout:
+            print(line)
+        print()
+        lineout = wrap(IO.info_msg)
+        print()
+        for line in lineout:
+            print(line)
         print()
 
     @staticmethod
