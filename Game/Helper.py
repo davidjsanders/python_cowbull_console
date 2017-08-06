@@ -7,8 +7,8 @@ class Helper(object):
     def __init__(self):
         pass
 
+    @staticmethod
     def get_input(
-            self,
             prompt=None,
             default=None,
             choices=None,
@@ -29,7 +29,6 @@ class Helper(object):
 
         _help_text = help_text or 'Choose one of {}'.format(', '.join(_choices))
         _default = default
-        _answer = None
 
         # Build the prompt
         _prompt_a = "{}".format(prompt or "?")
@@ -63,8 +62,8 @@ class Helper(object):
 
         return _answer
 
+    @staticmethod
     def get_url_json(
-            self,
             url=None,
             headers=None,
             retries=None,
@@ -92,7 +91,7 @@ class Helper(object):
             timeout = _delay * (try_count + 1)
             try:
                 logging.debug("check_game_server_ready: Connecting to readiness URL: {}".format(url))
-                r = requests.get(url=url)
+                r = requests.get(url=url, headers=headers)
                 return_status = r.status_code
                 if return_status != 200:
                     return_data = {"error": "The URL ({}) returned {} --> {}".format(url, r.status_code, r.text)}
@@ -116,8 +115,8 @@ class Helper(object):
 
         return return_data, return_status
 
+    @staticmethod
     def post_url_json(
-            self,
             url=None,
             headers=None,
             data=None,
@@ -147,7 +146,6 @@ class Helper(object):
         return_data = {}
 
         try_count = 0
-        try_limit = 3
 
         while try_count < try_limit:
             timeout = _delay * (try_count + 1)
@@ -181,7 +179,11 @@ class Helper(object):
 
         return return_data, return_status
 
-    def check_status(self, status_code=None, dataset=None):
+    @staticmethod
+    def check_status(
+            status_code=None,
+            dataset=None
+    ):
         if not status_code:
             return True, None
 
@@ -202,9 +204,11 @@ class Helper(object):
 
         return False, None
 
-    def list_of_digits(self, game_digits=None):
+    @staticmethod
+    def list_of_digits(game_digits=None):
         return [i for i in range(0, game_digits)]
 
-    def list_of_string_digits(self, game_digits=None):
+    @staticmethod
+    def list_of_string_digits(game_digits=None):
         return [str(i+1)+"|" for i in range(0, game_digits)]
 
