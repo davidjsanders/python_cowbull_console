@@ -39,14 +39,13 @@ class IO(object):
 
     @staticmethod
     def instructions(instructions_text=None):
-        lineout = wrap(instructions_text or IO.welcome_msg)
         print()
-        for line in lineout:
+
+        for line in wrap(instructions_text or IO.welcome_msg):
             print(line)
         print()
-        lineout = wrap(IO.info_msg)
-        print()
-        for line in lineout:
+
+        for line in wrap(IO.info_msg):
             print(line)
         print()
 
