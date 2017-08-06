@@ -8,8 +8,8 @@ class IO(object):
                   "a set of digits by entering a sequence of numbers. Each time you try " \
                   "to guess, you will see an analysis of your guesses: * is a bull (the " \
                   "right number in the right place), - (the right number in the wrong " \
-                  "place), x is a miss. Any symbol highlighted in bold means that the " \
-                  "number occurs more than once."
+                  "place), x is a miss. Any symbol highlighted in " + chr(27) + "[4mbold" + chr(27) + "[0m " \
+                  "means that the number occurs more than once."
     info_msg = "This game is part of a series which shows how an API based game object " \
                "and server can be created, deployed to multiple platforms (bare metal, " \
                "Kubernetes, Google App Engine, etc.), and accessed with multiple " \
