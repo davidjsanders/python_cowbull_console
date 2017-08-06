@@ -1,5 +1,7 @@
+import logging
 import os
-from .Helper import Helper
+import requests
+from time import sleep
 
 
 class Game:
@@ -8,7 +10,7 @@ class Game:
     ERROR = -3
     CONTINUE = 0
 
-    def __init__(self, helper=None):
+    def __init__(self):
         self.game_server = dict()
         self.game_server["host"] = os.getenv("cowbull_host", "localhost")
         self.game_server["port"] = os.getenv("cowbull_port", 5000)
@@ -32,17 +34,15 @@ class Game:
         self.game_modes = None
         self.guesses = []
 
-        self.helper = helper or Helper()
-
     def get_modes(self):
-        self.game_modes, status = self.helper.get_url_json(
+        self.game_modes, status = self.get_url_json(
             url=self.modes_url,
             headers={"Content-type": "application/json"},
             retries=3,
             delay_increment=5
         )
 
-        in_error, error_detail = self.helper.check_status(status, self.game_modes)
+        in_error, error_detail = self.check_status(status, self.game_modes)
 
         if in_error:
             return False, error_detail
@@ -50,7 +50,7 @@ class Game:
         return self.game_modes, None
 
     def check_game_server_ready(self):
-        json_data, status = self.helper.get_url_json(url=self.ready_url, retries=3, delay_increment=5)
+        json_data, status = self.get_url_json(url=self.ready_url, retries=3, delay_increment=5)
         if status == 200 and 'status' in json_data and json_data['status'] == "ready":
             return True
         else:
@@ -60,13 +60,13 @@ class Game:
         if mode is None:
             mode = "normal"
 
-        self.game, status = self.helper.get_url_json(
+        self.game, status = self.get_url_json(
             url=self.game_url+"?mode={}".format(mode),
             retries=3,
             delay_increment=5
         )
 
-        in_error, error_detail = self.helper.check_status(status, self.game)
+        in_error, error_detail = self.check_status(status, self.game)
 
         if in_error:
             return False, error_detail
@@ -80,7 +80,7 @@ class Game:
         return True, None
 
     def take_turn(self, guessed_digits=None):
-        game_output, status_code = self.helper.post_url_json(
+        game_output, status_code = self.post_url_json(
             url=self.game_url,
             headers={"Content-type": "application/json"},
             data={"key": self.game_key, "digits": guessed_digits},
@@ -88,7 +88,7 @@ class Game:
             delay_increment=5
         )
 
-        in_error, error_detail = self.helper.check_status(status_code, game_output)
+        in_error, error_detail = self.check_status(status_code, game_output)
 
         if in_error:
             return Game.ERROR, error_detail
@@ -100,3 +100,151 @@ class Game:
             return Game.LOST, game_output
         else:
             return Game.CONTINUE, game_output
+
+    def list_of_digits(self):
+        return [i for i in range(0, self.game_digits)]
+
+    def list_of_string_digits(self):
+        return [str(i+1)+"|" for i in range(0, self.game_digits)]
+
+    @staticmethod
+    def get_url_json(
+            url=None,
+            headers=None,
+            retries=None,
+            delay_increment=None
+    ):
+        if url is None:
+            raise ValueError("The URL cannot be empty")
+
+        if not retries:
+            try_limit = 5
+        else:
+            try_limit = retries
+
+        if not delay_increment:
+            _delay = 5
+        else:
+            _delay = delay_increment
+
+        return_status = 500
+        return_data = {}
+
+        try_count = 0
+
+        while try_count < try_limit:
+            timeout = _delay * (try_count + 1)
+            try:
+                logging.debug("check_game_server_ready: Connecting to readiness URL: {}".format(url))
+                r = requests.get(url=url, headers=headers)
+                return_status = r.status_code
+                if return_status != 200:
+                    return_data = {"error": "The URL ({}) returned {} --> {}".format(url, r.status_code, r.text)}
+                    break
+                return_data = r.json()
+                break
+            except requests.ConnectionError as ce:
+                logging.debug("check_game_server_ready: ConnectionError: {}".format(str(ce)))
+                print("Connection to {} failed. Re-trying in {} seconds...".format(url, timeout))
+            except ValueError as ve:
+                logging.debug("check_game_server_ready: ConnectionError: {}".format(str(ve)))
+                print("{} Re-trying in {} seconds...".format(str(ve), timeout))
+            except Exception as e:
+                logging.debug("check_game_server_ready: Exception: {}".format(repr(e)))
+                print("An unexpected error occurred! {}".format(repr(e)))
+                return_data = {"error": "An unexpected error occurred accessing {}! {}".format(url, repr(e))}
+                break
+
+            sleep(timeout)
+            try_count += 1
+
+        return return_data, return_status
+
+    @staticmethod
+    def post_url_json(
+            url=None,
+            headers=None,
+            data=None,
+            retries=None,
+            delay_increment=None
+    ):
+        if url is None:
+            raise ValueError("The URL cannot be empty")
+
+        if not isinstance(headers, dict):
+            raise TypeError('post_url_json: headers must be a dict of key value pairs.')
+
+        if data and not isinstance(data, dict):
+            raise TypeError('post_url_json: data must be provided as an object (dict)')
+
+        if not retries:
+            try_limit = 5
+        else:
+            try_limit = retries
+
+        if not delay_increment:
+            _delay = 5
+        else:
+            _delay = delay_increment
+
+        return_status = 500
+        return_data = {}
+
+        try_count = 0
+
+        while try_count < try_limit:
+            timeout = _delay * (try_count + 1)
+            try:
+                logging.debug("check_game_server_ready: Connecting to readiness URL: {}".format(url))
+                r = requests.post(url=url, json=data, headers=headers)
+                return_status = r.status_code
+                if return_status != 200:
+                    try:
+                        _json = r.json()
+                        return_data = _json
+                    except Exception:
+                        return_data = {"error": "The URL ({}) returned {} --> {}".format(url, r.status_code, r.text)}
+                    break
+                return_data = r.json()
+                break
+            except requests.ConnectionError as ce:
+                logging.debug("check_game_server_ready: ConnectionError: {}".format(str(ce)))
+                print("Connection to {} failed. Re-trying in {} seconds...".format(url, timeout))
+            except ValueError as ve:
+                logging.debug("check_game_server_ready: ConnectionError: {}".format(str(ve)))
+                print("{} Re-trying in {} seconds...".format(str(ve), timeout))
+            except Exception as e:
+                logging.debug("check_game_server_ready: Exception: {}".format(repr(e)))
+                print("An unexpected error occurred! {}".format(repr(e)))
+                return_data = {"error": "An unexpected error occurred accessing {}! {}".format(url, repr(e))}
+                break
+
+            sleep(timeout)
+            try_count += 1
+
+        return return_data, return_status
+
+    @staticmethod
+    def check_status(
+            status_code=None,
+            dataset=None
+    ):
+        if not status_code:
+            return True, None
+
+        if status_code != 200:
+            if not dataset:
+                return True, "Wow! Something went wrong, but we do not know what! Please try again"
+
+            if 'exception' in dataset:
+                error_detail = dataset["exception"]
+            elif 'message' in dataset:
+                error_detail = dataset['message']
+            elif 'error' in dataset:
+                error_detail = dataset["error"]
+            else:
+                error_detail = "Wow! Something went wrong, but we do not know what! Please try again"
+
+            return True, error_detail
+
+        return False, None
