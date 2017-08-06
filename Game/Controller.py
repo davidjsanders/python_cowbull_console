@@ -25,6 +25,8 @@ class Controller(object):
         # game.
         game = Game()
 
+        self.io.output_message("Connecting to the game server...")
+
         # Get the Game model to check if the server is ready. It will take
         # configuration from os environment variables. See Game.py for more
         # information.

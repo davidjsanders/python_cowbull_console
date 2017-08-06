@@ -16,8 +16,9 @@ class IO(object):
                "and server can be created, deployed to multiple platforms (bare metal, " \
                "Kubernetes, Google App Engine, etc.), and accessed with multiple " \
                "clients (web, console, curses, chat-bot, smartphone, etc.). The game is " \
-               "not intended to be challenging; rather to demonstrate approach." \
-               "David Sanders, dsanderscanadaNOSPAM@gmail.com"
+               "not intended to be challenging; rather to demonstrate approach."
+
+    author = "David Sanders, dsanderscanadaNOSPAM@gmail.com"
 
     def __init__(self):
         # Define the header - note the use of ANSI escape sequences - and the output structures
@@ -49,6 +50,8 @@ class IO(object):
 
         for line in wrap(IO.info_msg):
             print(line)
+        print()
+        print(IO.author)
         print()
 
     @staticmethod
@@ -126,9 +129,18 @@ class IO(object):
         print("{}".format(finish_message))
         print()
 
+    @staticmethod
+    def output_message(message=None):
+        print(message)
+
     def draw_screen(self):
         _ = os.system('clear')
-        self.show_analysis()
+        self.print_lines(self.user_output_header)
+        print(self.user_output_try)
+        print('-'*78)
+        self.print_lines(self.user_output)
+        self.print_lines(self.user_output_footer)
+#        self.show_analysis()
 
     def update_line(self, lineno, result, numbers_input):
         self.user_output[lineno-1] = self.line_format \
