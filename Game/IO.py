@@ -3,18 +3,20 @@ from textwrap import wrap
 
 
 class IO(object):
+    """The IO class controls the input and output for the python_cowbull_console game for
+    ANSI compatible terminals."""
+
     ESCAPE_CODE = chr(27)
     UNDERLINE_TEXT = ESCAPE_CODE + "[1m"
     BOLD_TEXT = ESCAPE_CODE + "[4m"
     NORMAL_TEXT = ESCAPE_CODE + "[0m"
 
-    """The IO class controls the input and output for the python_cowbull_console game."""
     welcome_msg = "Welcome to the CowBull game. The objective of this game is to guess " \
                   "a set of digits by entering a sequence of numbers. Each time you try " \
                   "to guess, you will see an analysis of your guesses: * is a bull (the " \
                   "right number in the right place), - (the right number in the wrong " \
                   "place), x is a miss. Any symbol underlined and highlighted in " \
-                  + chr(27) + "[1m" + chr(27) + "[4mbold" + chr(27) + "[0m " \
+                  + UNDERLINE_TEXT + BOLD_TEXT + "bold" + NORMAL_TEXT + " " + \
                   "means that the number occurs more than once."
 
     info_msg = "This game is part of a series which shows how an API based game object " \
@@ -30,7 +32,7 @@ class IO(object):
         # for presenting (and collecting) user IO.
         self.user_output_header = [
             "Game Analysis: * (Bull), - (Cow), x (miss), " +
-            IO.UNDERLINE_TEXT + IO.BOLD_TEXT + "bold" + IO.NORMAL_TEXT + "(multiple)",
+            IO.UNDERLINE_TEXT + IO.BOLD_TEXT + "bold" + IO.NORMAL_TEXT + " (multiple)",
             "-" * 78,
             ""
         ]
@@ -150,7 +152,8 @@ class IO(object):
         for line in list_of_lines:
             print(line)
 
-    def draw_screen(self):
+    def draw_screen(self, current_try):
+        self.user_output_try = "Try {}; your guesses:".format(current_try)
         _ = os.system('clear')
         self.print_lines(self.user_output_header)
         print(self.user_output_try)
@@ -188,10 +191,9 @@ class IO(object):
 
         return output_string
 
-    def setup_header(self, digits_needed, game_tries):
+    def setup_header(self, game_tries):
         # Setup the header for the correct number of digits required depending
         # upon the game mode.
-        self.user_output_try = "Try |{}  | Your guesses".format(digits_needed)
         self.user_output = []
         for i in range(0, game_tries):
             self.user_output.append("  {:2d}|".format(i+1))

@@ -63,21 +63,20 @@ class Controller(object):
             # this app has no knowledge of the game object or how it was
             # created.
 
-            # Setup the header and screen based on the mode (the number of
-            # digits and the number of guesses) of the game.
-            self.io.setup_header(
-                digits_needed=', '.join(game.list_of_string_digits()),
-                game_tries=game.game_tries
-            )
-            self.io.draw_screen()
-
-            # Set a default finish message.
-            finish_message = "Okay, thanks for playing!"
-
             # Initialize a counter to track the number of guesses which have
             # been made on the game. Note, the user can quit out of the game
             # at any point and control then returns to app.py.
             counter = 1
+
+            # Setup the header and screen based on the mode (the number of
+            # digits and the number of guesses) of the game.
+            self.io.setup_header(game_tries=game.game_tries)
+
+            # Draw the screen
+            self.io.draw_screen(current_try=counter)
+
+            # Set a default finish message.
+            finish_message = "Okay, thanks for playing!"
 
             # Loop, ask the user for their guess, and then analyze the guess
             # using the Game model.
@@ -113,7 +112,7 @@ class Controller(object):
                 )
 
                 # Redraw the screen.
-                self.io.draw_screen()
+                self.io.draw_screen(current_try=counter)
 
                 # Check if the user won or lost the game.
                 if status in [Game.WON, Game.LOST]:
@@ -139,4 +138,4 @@ class Controller(object):
             # initiate a game. This shouldn't happen, but can, so the error is
             # reported and control returns to app.py
             self.io.print_error(error_detail)
-            self.io.print_error(error_detail="For some reason, it has not been possible to start the game. Sorry.")
+            self.io.output_message(message="For some reason, it has not been possible to start the game. Sorry.")
