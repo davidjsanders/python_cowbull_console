@@ -3,6 +3,11 @@ from textwrap import wrap
 
 
 class IO(object):
+    ESCAPE_CODE = chr(27)
+    UNDERLINE_TEXT = ESCAPE_CODE + "[1m"
+    BOLD_TEXT = ESCAPE_CODE + "[4m"
+    NORMAL_TEXT = ESCAPE_CODE + "[0m"
+
     """The IO class controls the input and output for the python_cowbull_console game."""
     welcome_msg = "Welcome to the CowBull game. The objective of this game is to guess " \
                   "a set of digits by entering a sequence of numbers. Each time you try " \
@@ -14,7 +19,7 @@ class IO(object):
 
     info_msg = "This game is part of a series which shows how an API based game object " \
                "and server can be created, deployed to multiple platforms (bare metal, " \
-               "Kubernetes, Google App Engine, etc.), and accessed with multiple " \
+               "Docker, Kubernetes, Google App Engine, etc.), and accessed with multiple " \
                "clients (web, console, curses, chat-bot, smartphone, etc.). The game is " \
                "not intended to be challenging; rather to demonstrate approach."
 
@@ -25,7 +30,7 @@ class IO(object):
         # for presenting (and collecting) user IO.
         self.user_output_header = [
             "Game Analysis: * (Bull), - (Cow), x (miss), " +
-            chr(27) + "[1m" + chr(27) + "[4mbold" + chr(27) + "[0m (multiple)",
+            IO.UNDERLINE_TEXT + IO.BOLD_TEXT + "bold" + IO.NORMAL_TEXT + "(multiple)",
             "-" * 78,
             ""
         ]
@@ -133,6 +138,18 @@ class IO(object):
     def output_message(message=None):
         print(message)
 
+    @staticmethod
+    def print_error(error_detail=None):
+        _err = error_detail or "No detail on the error was provided."
+        print()
+        IO.output_message("An error occurred: {}".format(_err))
+        print()
+
+    @staticmethod
+    def print_lines(list_of_lines):
+        for line in list_of_lines:
+            print(line)
+
     def draw_screen(self):
         _ = os.system('clear')
         self.print_lines(self.user_output_header)
@@ -140,12 +157,11 @@ class IO(object):
         print('-'*78)
         self.print_lines(self.user_output)
         self.print_lines(self.user_output_footer)
-#        self.show_analysis()
 
-    def update_line(self, lineno, result, numbers_input):
-        self.user_output[lineno-1] = self.line_format \
+    def update_line(self, line_number, result, numbers_input):
+        self.user_output[line_number - 1] = self.line_format \
             .format(
-            lineno,
+            line_number,
             self._analyse_results(result),
             str(numbers_input).replace('[', '').replace(']', '')
         )
@@ -200,22 +216,9 @@ class IO(object):
 
         return answer.lower(), None
 
-    @staticmethod
-    def print_error(error_detail=None):
-        _err = error_detail or "No detail on the error was provided."
-
-        print()
-        print("An error occurred: {}".format(_err))
-        print()
-
-    @staticmethod
-    def print_lines(list_of_lines):
-        for line in list_of_lines:
-            print(line)
-
     def get_guess(self, game_digits=None, default_answer=None):
         while True:
-            stdin = self.get_user_input(
+            user_input = self.get_user_input(
                 prompt="Enter {} digits separated by commas or quit".format(game_digits),
                 ignore_case=True,
                 allow_empty=True,
@@ -223,12 +226,12 @@ class IO(object):
                 help_text="You need to enter {} digits separated by commas.".format(game_digits)
             )
 
-            if stdin.lower() == "quit":
+            if user_input.lower() == "quit":
                 return_list = [-1]  # Sentinel to signify quit
                 break
 
             try:
-                return_list = stdin.replace(" ", "").split(",")
+                return_list = user_input.replace(" ", "").split(",")
 
                 if len(return_list) != game_digits:
                     raise ValueError("Number of digits incorrect")
@@ -241,10 +244,3 @@ class IO(object):
                 print("Exception! {}".format(repr(e)))
 
         return return_list
-
-    def show_analysis(self):
-        self.print_lines(self.user_output_header)
-        print(self.user_output_try)
-        print('-'*78)
-        self.print_lines(self.user_output)
-        self.print_lines(self.user_output_footer)

@@ -107,7 +107,7 @@ class Controller(object):
 
                 # Update the line on the screen for the analysis of the guess.
                 self.io.update_line(
-                    lineno=counter,
+                    line_number=counter,
                     result=turn_output["outcome"]["analysis"],
                     numbers_input=input_list
                 )
