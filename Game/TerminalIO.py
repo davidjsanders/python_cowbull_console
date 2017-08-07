@@ -2,8 +2,8 @@ import os
 from textwrap import wrap
 
 
-class IO(object):
-    """The IO class controls the input and output for the python_cowbull_console game for
+class TerminalIO(object):
+    """The TerminalIO class controls the input and output for the python_cowbull_console game for
     ANSI compatible terminals."""
 
     ESCAPE_CODE = chr(27)
@@ -29,10 +29,10 @@ class IO(object):
 
     def __init__(self):
         # Define the header - note the use of ANSI escape sequences - and the output structures
-        # for presenting (and collecting) user IO.
+        # for presenting (and collecting) user TerminalIO.
         self.user_output_header = [
             "Game Analysis: * (Bull), - (Cow), x (miss), " +
-            IO.UNDERLINE_TEXT + IO.BOLD_TEXT + "bold" + IO.NORMAL_TEXT + " (multiple)",
+            TerminalIO.UNDERLINE_TEXT + TerminalIO.BOLD_TEXT + "bold" + TerminalIO.NORMAL_TEXT + " (multiple)",
             "-" * 78,
             ""
         ]
@@ -51,14 +51,14 @@ class IO(object):
     def instructions(instructions_text=None):
         print()
 
-        for line in wrap(instructions_text or IO.welcome_msg):
+        for line in wrap(instructions_text or TerminalIO.welcome_msg):
             print(line)
         print()
 
-        for line in wrap(IO.info_msg):
+        for line in wrap(TerminalIO.info_msg):
             print(line)
         print()
-        print(IO.author)
+        print(TerminalIO.author)
         print()
 
     @staticmethod
@@ -144,22 +144,22 @@ class IO(object):
     def print_error(error_detail=None):
         _err = error_detail or "No detail on the error was provided."
         print()
-        IO.output_message("An error occurred: {}".format(_err))
+        TerminalIO.output_message("An error occurred: {}".format(_err))
         print()
 
     @staticmethod
-    def print_lines(list_of_lines):
+    def _print_lines(list_of_lines):
         for line in list_of_lines:
             print(line)
 
     def draw_screen(self, current_try):
         self.user_output_try = "Try {}; your guesses:".format(current_try)
         _ = os.system('clear')
-        self.print_lines(self.user_output_header)
+        self._print_lines(self.user_output_header)
         print(self.user_output_try)
         print('-'*78)
-        self.print_lines(self.user_output)
-        self.print_lines(self.user_output_footer)
+        self._print_lines(self.user_output)
+        self._print_lines(self.user_output_footer)
 
     def update_line(self, line_number, result, numbers_input):
         self.user_output[line_number - 1] = self.line_format \
@@ -175,7 +175,7 @@ class IO(object):
 
         for analysis_record in game_analysis:
             if analysis_record["multiple"]:
-                output_string += chr(27) + "[1m" + chr(27) + "[4m"
+                output_string += TerminalIO.UNDERLINE_TEXT + TerminalIO.BOLD_TEXT
 
             if analysis_record["match"]:
                 output_string += "*"
@@ -185,7 +185,7 @@ class IO(object):
                 output_string += "x"
 
             if analysis_record["multiple"]:
-                output_string += chr(27) + "[0m"
+                output_string += TerminalIO.NORMAL_TEXT
 
             output_string += "| "
 
@@ -213,7 +213,8 @@ class IO(object):
             help_text="The modes are defined by the game server and, typically, are set to "
                       "provide varying options like easy, normal, and hard. These vary the "
                       "number of guesses you are allowed to make and the number of digits "
-                      "you're asked to guess. The names of the modes should be self-explanatory."
+                      "you're asked to guess. The names of the modes should be self-explanatory; "
+                      "however, it is up to the game server, so they could vary widely."
         )
 
         return answer.lower(), None

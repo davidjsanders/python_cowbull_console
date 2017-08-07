@@ -1,3 +1,3 @@
-from Game.Game import Game
-from Game.IO import IO
-from Game.Controller import Controller
+#from Game.Game import Game
+#from Game.TerminalIO import TerminalIO
+#from Game.ConsoleController import ConsoleController

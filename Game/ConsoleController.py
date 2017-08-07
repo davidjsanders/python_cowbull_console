@@ -1,15 +1,18 @@
 from .Game import Game
-from .IO import IO
+from AbstractClasses.Controller import Controller
 
 
-class Controller(object):
-    """Controller is the control module for the python_cowbull_console game. It is
+class ConsoleController(Controller):
+    """ConsoleController is the control module for the python_cowbull_console game. It is
     initiated by app.py and controls a single game interaction."""
     def __init__(self, io=None):
-        self.io = io or IO()
+        if not io:
+            raise ValueError("No user input/output control was passed to the ConsoleController!")
+        self.io = io
+        super(ConsoleController, self).__init__()
 
     def play(self):
-        """play initiates instructs the Controller to initiate a game"""
+        """play initiates instructs the ConsoleController to initiate a game"""
 
         # Show the instructions to the user.
         self.io.instructions()
@@ -18,14 +21,14 @@ class Controller(object):
         if not self.io.want_to_play():
             # At this point, the user has said they don't want to play. So
             # give a farewell and then return control to app.py.
-            self.io.print_finish("Okay, come back soon!")
+            self.io.finish("Okay, come back soon!")
             return
 
         # The user has started a game, so ask the Game model to create a new
         # game.
         game = Game()
 
-        self.io.output_message("Connecting to the game server...")
+        self.io.report_status("Connecting to the game server...")
 
         # Get the Game model to check if the server is ready. It will take
         # configuration from os environment variables. See Game.py for more
@@ -45,14 +48,16 @@ class Controller(object):
         if not modes:
             # For some reason (contained in the error detail), the modes
             # weren't returned properly; therefore, the game cannot play.
-            self.io.print_error(error_detail)
+            self.io.report_error(error_detail)
             return()
 
         # Ask the user to chose a mode to play.
-        mode, error_detail = self.io.choose_a_mode(game_modes=modes)
+        mode, error_detail = self.io.choose_a_mode(
+            available_modes=[str(i['mode']) for i in modes]
+        )
         if not mode:
             # This should never be reachable, but just in case :)
-            self.io.print_error(error_detail)
+            self.io.report_error(error_detail)
             return()
 
         # Ask the Game model to create a game using the mode selected by
@@ -61,7 +66,8 @@ class Controller(object):
         if game_status:
             # If we're here, then the game was successfully created; note,
             # this app has no knowledge of the game object or how it was
-            # created.
+            # created. If the IO has a start message, tell it to show.
+            self.io.start("Okay, the game is about to begin.")
 
             # Initialize a counter to track the number of guesses which have
             # been made on the game. Note, the user can quit out of the game
@@ -70,7 +76,7 @@ class Controller(object):
 
             # Setup the header and screen based on the mode (the number of
             # digits and the number of guesses) of the game.
-            self.io.setup_header(game_tries=game.game_tries)
+            self.io.setup(game_tries=game.game_tries)
 
             # Draw the screen
             self.io.draw_screen(current_try=counter)
@@ -101,14 +107,14 @@ class Controller(object):
                 # If there's an error, show the error details and then continue
                 # looping.
                 if status == Game.ERROR:
-                    self.io.print_error(turn_output)
+                    self.io.report_error(turn_output)
                     continue
 
                 # Update the line on the screen for the analysis of the guess.
-                self.io.update_line(
+                self.io.update_result(
                     line_number=counter,
                     result=turn_output["outcome"]["analysis"],
-                    numbers_input=input_list
+                    numbers_guessed=input_list
                 )
 
                 # Redraw the screen.
@@ -132,10 +138,10 @@ class Controller(object):
 
             # The game is over. Print the finish message which will be either the
             # default (if a user quit), a win, or a loss message.
-            self.io.print_finish(finish_message)
+            self.io.finish(finish_message)
         else:
             # The else block is reached if the Game model is unable to create and
             # initiate a game. This shouldn't happen, but can, so the error is
             # reported and control returns to app.py
-            self.io.print_error(error_detail)
-            self.io.output_message(message="For some reason, it has not been possible to start the game. Sorry.")
+            self.io.report_error(error_detail)
+            self.io.report_status(message="For some reason, it has not been possible to start the game. Sorry.")
