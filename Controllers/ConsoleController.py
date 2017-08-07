@@ -1,5 +1,5 @@
-from .Game import Game
 from AbstractClasses.Controller import Controller
+from Model.Game import Game
 
 
 class ConsoleController(Controller):

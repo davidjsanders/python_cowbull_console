@@ -1,6 +1,7 @@
 import logging
-from Game.ConsoleController import ConsoleController as Controller
-from Game.ANSI import ANSI as IO
+
+from Controllers.ConsoleController import ConsoleController as Controller
+from Views.ANSI import ANSI as IO
 
 # Code block executed if the program is 'run'
 if __name__ == "__main__":
