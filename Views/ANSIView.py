@@ -6,7 +6,7 @@ from time import sleep
 from AbstractClasses.IO import IO
 
 
-class ANSI(IO):
+class ANSIView(IO):
     ESCAPE_CODE = chr(27)
     UNDERLINE_TEXT = ESCAPE_CODE + "[1m"
     BOLD_TEXT = ESCAPE_CODE + "[4m"
@@ -20,20 +20,12 @@ class ANSI(IO):
                   + UNDERLINE_TEXT + BOLD_TEXT + "bold" + NORMAL_TEXT + " " + \
                   "means that the number occurs more than once."
 
-    info_msg = "This game is part of a series which shows how an API based game object " \
-               "and server can be created, deployed to multiple platforms (bare metal, " \
-               "Docker, Kubernetes, Google App Engine, etc.), and accessed with multiple " \
-               "clients (web, console, curses, chat-bot, smartphone, etc.). The game is " \
-               "not intended to be challenging; rather to demonstrate approach."
-
-    author = "David Sanders, dsanderscanadaNOSPAM@gmail.com"
-
     def __init__(self):
-        # Define the header - note the use of ANSI escape sequences - and the output structures
+        # Define the header - note the use of ANSIView escape sequences - and the output structures
         # for presenting (and collecting) user TerminalIO.
         self.user_output_header = [
             "Game Analysis: * (Bull), - (Cow), x (miss), " +
-            ANSI.UNDERLINE_TEXT + ANSI.BOLD_TEXT + "bold" + ANSI.NORMAL_TEXT + " (multiple)",
+            ANSIView.UNDERLINE_TEXT + ANSIView.BOLD_TEXT + "bold" + ANSIView.NORMAL_TEXT + " (multiple)",
             "-" * 78,
             ""
         ]
@@ -54,7 +46,7 @@ class ANSI(IO):
         else:
             self.input_function = input
 
-        super(ANSI, self).__init__()
+        super(ANSIView, self).__init__()
 
     #
     # Concrete implementations of abstract methods
@@ -63,14 +55,14 @@ class ANSI(IO):
     def instructions(self, instruction_text=None, info_text=None, author=None):
         print('')
 
-        for line in wrap(instruction_text or ANSI.welcome_msg):
+        for line in wrap(instruction_text or ANSIView.welcome_msg):
             print(line)
         print('')
 
-        for line in wrap(ANSI.info_msg):
+        for line in wrap(ANSIView.info_msg):
             print(line)
         print('')
-        print(ANSI.author)
+        print(ANSIView.author)
         print('')
 
     def want_to_play(self):
@@ -245,7 +237,7 @@ class ANSI(IO):
 
         for analysis_record in game_analysis:
             if analysis_record["multiple"]:
-                output_string += ANSI.UNDERLINE_TEXT + ANSI.BOLD_TEXT
+                output_string += ANSIView.UNDERLINE_TEXT + ANSIView.BOLD_TEXT
 
             if analysis_record["match"]:
                 output_string += "*"
@@ -255,7 +247,7 @@ class ANSI(IO):
                 output_string += "x"
 
             if analysis_record["multiple"]:
-                output_string += ANSI.NORMAL_TEXT
+                output_string += ANSIView.NORMAL_TEXT
 
             output_string += "| "
 

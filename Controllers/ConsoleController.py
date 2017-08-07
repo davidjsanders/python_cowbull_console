@@ -6,10 +6,7 @@ class ConsoleController(Controller):
     """ConsoleController is the control module for the python_cowbull_console game. It is
     initiated by app.py and controls a single game interaction."""
     def __init__(self, io=None):
-        if not io:
-            raise ValueError("No user input/output control was passed to the ConsoleController!")
-        self.io = io
-        super(ConsoleController, self).__init__()
+        super(ConsoleController, self).__init__(io=io)
 
     def play(self):
         """play initiates instructs the ConsoleController to initiate a game"""

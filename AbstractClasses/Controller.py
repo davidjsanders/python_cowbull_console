@@ -15,8 +15,10 @@ ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
 
 class Controller(ABC):
 
-    def __init__(self):
-        pass
+    def __init__(self, io=None):
+        if not io:
+            raise ValueError("No user input/output control was passed to the ConsoleController!")
+        self.io = io
 
     @abc.abstractmethod
     def play(self):

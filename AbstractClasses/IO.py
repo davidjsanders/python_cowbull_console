@@ -14,6 +14,13 @@ ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
 
 
 class IO(ABC):
+    info_msg = "This game is part of a series which shows how an API based game object " \
+               "and server can be created, deployed to multiple platforms (bare metal, " \
+               "Docker, Kubernetes, Google App Engine, etc.), and accessed with multiple " \
+               "clients (web, console, curses, chat-bot, smartphone, etc.). The game is " \
+               "not intended to be challenging; rather to demonstrate approach."
+
+    author = "David Sanders, dsanderscanadaNOSPAM@gmail.com"
 
     def __init__(self):
         pass

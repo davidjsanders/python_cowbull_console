@@ -4,7 +4,7 @@ from textwrap import wrap
 
 class TerminalIO(object):
     """The TerminalIO class controls the input and output for the python_cowbull_console game for
-    ANSI compatible terminals."""
+    ANSIView compatible terminals."""
 
     ESCAPE_CODE = chr(27)
     UNDERLINE_TEXT = ESCAPE_CODE + "[1m"
@@ -28,7 +28,7 @@ class TerminalIO(object):
     author = "David Sanders, dsanderscanadaNOSPAM@gmail.com"
 
     def __init__(self):
-        # Define the header - note the use of ANSI escape sequences - and the output structures
+        # Define the header - note the use of ANSIView escape sequences - and the output structures
         # for presenting (and collecting) user TerminalIO.
         self.user_output_header = [
             "Game Analysis: * (Bull), - (Cow), x (miss), " +
