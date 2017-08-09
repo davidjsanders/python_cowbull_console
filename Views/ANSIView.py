@@ -3,10 +3,10 @@ import sys
 from textwrap import wrap
 from time import sleep
 
-from AbstractClasses.IO import IO
+from AbstractClasses.AbstractIO import AbstractIO
 
 
-class ANSIView(IO):
+class ANSIView(AbstractIO):
     ESCAPE_CODE = chr(27)
     UNDERLINE_TEXT = ESCAPE_CODE + "[1m"
     BOLD_TEXT = ESCAPE_CODE + "[4m"
@@ -21,6 +21,8 @@ class ANSIView(IO):
                   "means that the number occurs more than once."
 
     def __init__(self):
+        super(ANSIView, self).__init__()
+
         # Define the header - note the use of ANSIView escape sequences - and the output structures
         # for presenting (and collecting) user TerminalIO.
         self.user_output_header = [
@@ -46,11 +48,14 @@ class ANSIView(IO):
         else:
             self.input_function = input
 
-        super(ANSIView, self).__init__()
+        self.callback = None
 
     #
     # Concrete implementations of abstract methods
     # --------------------------------------------
+
+    def construct(self, callback=None):
+        self.callback = callback
 
     def instructions(self, instruction_text=None, info_text=None, author=None):
         print('')
@@ -67,7 +72,7 @@ class ANSIView(IO):
 
     def want_to_play(self):
         answer = self.get_user_input(
-            prompt="Do you want to play?",
+            prompt=self.network_message,
             default="yes",
             choices=["y", "ye", "yes", "n", "no"],
             ignore_case=True,
@@ -171,6 +176,9 @@ class ANSIView(IO):
             self._analyse_results(result),
             ', '.join([str(i) for i in numbers_guessed])
         )
+
+    def update_screen(self):
+        pass
 
     #
     # 'Private' methods

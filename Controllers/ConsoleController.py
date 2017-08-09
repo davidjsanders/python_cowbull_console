@@ -1,8 +1,8 @@
-from AbstractClasses.Controller import Controller
+from AbstractClasses.AbstractController import AbstractController
 from Model.Game import Game
 
 
-class ConsoleController(Controller):
+class ConsoleController(AbstractController):
     """ConsoleController is the control module for the python_cowbull_console game. It is
     initiated by app.py and controls a single game interaction."""
     def __init__(self, io=None):
@@ -23,7 +23,7 @@ class ConsoleController(Controller):
 
         # The user has started a game, so ask the Game model to create a new
         # game.
-        game = Game()
+        game = Game(callback_notifier=self.io.report_status)
 
         self.io.report_status("Connecting to the game server...")
 
@@ -34,8 +34,10 @@ class ConsoleController(Controller):
             # The Game model couldn't reach the server or did not receive
             # a ready response, so report to the user and return control
             # to app.py.
-            print("Sorry, the cowbull game isn't available right now; "
-                  "please come back later. The issue has been logged.")
+            self.io.report_status(
+                "Sorry, the cowbull game isn't available right now; "
+                "please come back later. The issue has been logged."
+            )
             return
 
         # Ask the Game model to get a list of available modes. The Game
@@ -63,7 +65,7 @@ class ConsoleController(Controller):
         if game_status:
             # If we're here, then the game was successfully created; note,
             # this app has no knowledge of the game object or how it was
-            # created. If the IO has a start message, tell it to show.
+            # created. If the AbstractIO has a start message, tell it to show.
             self.io.start("Okay, the game is about to begin.")
 
             # Initialize a counter to track the number of guesses which have

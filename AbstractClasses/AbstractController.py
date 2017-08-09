@@ -13,7 +13,7 @@ import abc
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
 
 
-class Controller(ABC):
+class AbstractController(ABC):
 
     def __init__(self, io=None):
         if not io:

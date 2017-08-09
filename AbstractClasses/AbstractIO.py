@@ -13,16 +13,24 @@ import abc
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
 
 
-class IO(ABC):
+class AbstractIO(ABC):
     info_msg = "This game is part of a series which shows how an API based game object " \
                "and server can be created, deployed to multiple platforms (bare metal, " \
                "Docker, Kubernetes, Google App Engine, etc.), and accessed with multiple " \
                "clients (web, console, curses, chat-bot, smartphone, etc.). The game is " \
                "not intended to be challenging; rather to demonstrate approach."
 
+    network_message = "The game is about access the network " \
+                      "to connect to the game server; do you want to proceed?"
+
     author = "David Sanders, dsanderscanadaNOSPAM@gmail.com"
 
     def __init__(self):
+        pass
+
+    @abc.abstractmethod
+    def construct(self, callback=None):
+        """Construct any required IO features (e.g. GUI or Curses)"""
         pass
 
     @abc.abstractmethod
@@ -76,4 +84,9 @@ class IO(ABC):
     @abc.abstractmethod
     def update_result(self, line_number=None, result=None, numbers_guessed=None):
         """Update the output for the user"""
+        pass
+
+    @abc.abstractmethod
+    def update_screen(self):
+        """Force the screen to redraw"""
         pass

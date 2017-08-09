@@ -10,7 +10,7 @@ class Game:
     ERROR = -3
     CONTINUE = 0
 
-    def __init__(self):
+    def __init__(self, callback_notifier=None):
         self.game_server = dict()
         self.game_server["host"] = os.getenv("cowbull_host", "localhost")
         self.game_server["port"] = os.getenv("cowbull_port", 5000)
@@ -33,6 +33,15 @@ class Game:
         self.game_tries = None
         self.game_modes = None
         self.guesses = []
+        self._callback_notifier = callback_notifier
+
+    @property
+    def callback_notifier(self):
+        return self._callback_notifier
+
+    @callback_notifier.setter
+    def callback_notifier(self, value):
+        self._callback_notifier = value
 
     def get_modes(self):
         self.game_modes, status = self.get_url_json(
@@ -50,7 +59,11 @@ class Game:
         return self.game_modes, None
 
     def check_game_server_ready(self):
-        json_data, status = self.get_url_json(url=self.ready_url, retries=3, delay_increment=5)
+        json_data, status = self.get_url_json(
+            url=self.ready_url,
+            retries=3,
+            delay_increment=5
+        )
         if status == 200 and 'status' in json_data and json_data['status'] == "ready":
             return True
         else:
@@ -107,8 +120,8 @@ class Game:
     def list_of_string_digits(self):
         return [str(i+1)+"|" for i in range(0, self.game_digits)]
 
-    @staticmethod
     def get_url_json(
+            self,
             url=None,
             headers=None,
             retries=None,
@@ -145,13 +158,16 @@ class Game:
                 break
             except requests.ConnectionError as ce:
                 logging.debug("check_game_server_ready: ConnectionError: {}".format(str(ce)))
-                print("Connection to {} failed. Re-trying in {} seconds...".format(url, timeout))
+                if self._callback_notifier:
+                    self._callback_notifier("Connection to {} failed. Re-trying in {} seconds...".format(url, timeout))
             except ValueError as ve:
                 logging.debug("check_game_server_ready: ConnectionError: {}".format(str(ve)))
-                print("{} Re-trying in {} seconds...".format(str(ve), timeout))
+                if self._callback_notifier:
+                    self._callback_notifier("{} Re-trying in {} seconds...".format(str(ve), timeout))
             except Exception as e:
                 logging.debug("check_game_server_ready: Exception: {}".format(repr(e)))
-                print("An unexpected error occurred! {}".format(repr(e)))
+                if self._callback_notifier:
+                    self._callback_notifier("An unexpected error occurred! {}".format(repr(e)))
                 return_data = {"error": "An unexpected error occurred accessing {}! {}".format(url, repr(e))}
                 break
 
@@ -160,8 +176,8 @@ class Game:
 
         return return_data, return_status
 
-    @staticmethod
     def post_url_json(
+            self,
             url=None,
             headers=None,
             data=None,
@@ -209,13 +225,16 @@ class Game:
                 break
             except requests.ConnectionError as ce:
                 logging.debug("check_game_server_ready: ConnectionError: {}".format(str(ce)))
-                print("Connection to {} failed. Re-trying in {} seconds...".format(url, timeout))
+                if self._callback_notifier:
+                    self._callback_notifier("Connection to {} failed. Re-trying in {} seconds...".format(url, timeout))
             except ValueError as ve:
                 logging.debug("check_game_server_ready: ConnectionError: {}".format(str(ve)))
-                print("{} Re-trying in {} seconds...".format(str(ve), timeout))
+                if self._callback_notifier:
+                    self._callback_notifier("{} Re-trying in {} seconds...".format(str(ve), timeout))
             except Exception as e:
                 logging.debug("check_game_server_ready: Exception: {}".format(repr(e)))
-                print("An unexpected error occurred! {}".format(repr(e)))
+                if self._callback_notifier:
+                    self._callback_notifier("An unexpected error occurred! {}".format(repr(e)))
                 return_data = {"error": "An unexpected error occurred accessing {}! {}".format(url, repr(e))}
                 break
 
