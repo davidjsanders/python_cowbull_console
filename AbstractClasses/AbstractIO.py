@@ -35,7 +35,7 @@ class AbstractIO(ABC):
 
     @abc.abstractmethod
     def instructions(self, instruction_text=None, info_text=None, author=None):
-        """Show instructions to the user on how to play the game"""
+        """Show instructions to the user on how to execute the game"""
         pass
 
     @abc.abstractmethod

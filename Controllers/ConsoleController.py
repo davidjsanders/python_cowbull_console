@@ -5,63 +5,16 @@ from Model.Game import Game
 class ConsoleController(AbstractController):
     """ConsoleController is the control module for the python_cowbull_console game. It is
     initiated by app.py and controls a single game interaction."""
-    def __init__(self, io=None):
-        super(ConsoleController, self).__init__(io=io)
+    def __init__(self):
+        super(ConsoleController, self).__init__()
 
-    def play(self):
-        """play initiates instructs the ConsoleController to initiate a game"""
-
-        # Show the instructions to the user.
-        self.io.instructions()
-
-        # Ask if the user wants to play
-        if not self.io.want_to_play():
-            # At this point, the user has said they don't want to play. So
-            # give a farewell and then return control to app.py.
-            self.io.finish("Okay, come back soon!")
-            return
-
-        # The user has started a game, so ask the Game model to create a new
-        # game.
-        game = Game(callback_notifier=self.io.report_status)
-
-        self.io.report_status("Connecting to the game server...")
-
-        # Get the Game model to check if the server is ready. It will take
-        # configuration from os environment variables. See Game.py for more
-        # information.
-        if not game.check_game_server_ready():
-            # The Game model couldn't reach the server or did not receive
-            # a ready response, so report to the user and return control
-            # to app.py.
-            self.io.report_status(
-                "Sorry, the cowbull game isn't available right now; "
-                "please come back later. The issue has been logged."
-            )
-            return
-
-        # Ask the Game model to get a list of available modes. The Game
-        # servers may have different modes, so the Game model always
-        # checks.
-        modes, error_detail = game.get_modes()
-        if not modes:
-            # For some reason (contained in the error detail), the modes
-            # weren't returned properly; therefore, the game cannot play.
-            self.io.report_error(error_detail)
-            return()
-
-        # Ask the user to chose a mode to play.
-        mode, error_detail = self.io.choose_a_mode(
-            available_modes=[str(i['mode']) for i in modes]
-        )
-        if not mode:
-            # This should never be reachable, but just in case :)
-            self.io.report_error(error_detail)
-            return()
+    def execute(self):
+        print("Coming soon!")
+        return
 
         # Ask the Game model to create a game using the mode selected by
         # the user.
-        game_status, error_detail = game.get_game(mode=mode)
+        game_status, error_detail = self.game_controller.game.get_game(mode=mode)
         if game_status:
             # If we're here, then the game was successfully created; note,
             # this app has no knowledge of the game object or how it was

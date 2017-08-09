@@ -17,7 +17,7 @@ class TkView(AbstractIO):
     welcome_msg = "Welcome to the CowBull game. The objective of this game is to guess " \
                   "a set of digits by entering a sequence of numbers. Each time you try " \
                   "to guess, you will see an analysis of your guesses and be given a " \
-                  "number of tries to win. Choose a mode to play."
+                  "number of tries to win. Choose a mode to execute."
 
     app_name = "Python Cowbull Console Game"
 

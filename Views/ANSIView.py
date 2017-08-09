@@ -91,7 +91,7 @@ class ANSIView(AbstractIO):
             return False, 'The game server returned no modes. Unable to continue playing.'
 
         answer = self.get_user_input(
-            prompt="What mode of game would you like to play: {}?".format(', '.join(available_modes)),
+            prompt="What mode of game would you like to execute: {}?".format(', '.join(available_modes)),
             default=default_choice,
             choices=available_modes,
             ignore_case=True,

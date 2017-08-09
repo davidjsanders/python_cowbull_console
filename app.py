@@ -27,9 +27,11 @@ if __name__ == "__main__":
     if args.usegui:
         from Controllers.Controller import Controller as Controller
         from Views.TkView import TkView as IO
+        from Controllers.ConsoleController import ConsoleController as GameController
     else:
         from Controllers.Controller import Controller as Controller
         from Views.ANSIView import ANSIView as IO
+        from Controllers.ConsoleController import ConsoleController as GameController
 
     # Configure logging.
     if args.debugon:
@@ -40,8 +42,11 @@ if __name__ == "__main__":
     # Create an Input/Output object
     io = IO()
 
+    # Create a game controller
+    g = GameController()
+
     # Initiate the controller passing the TerminalIO and Helper objects
-    c = Controller(io=io)
+    c = Controller(io_controller=io, game_controller=g)
 
     # Play the game
     c.play()
