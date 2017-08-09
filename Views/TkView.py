@@ -288,7 +288,7 @@ class TkView(AbstractIO):
                     font=("Helvetica -weight bold", 14),
                     text="{}".format(analysis_record["digit"]),
                     borderwidth=4,
-                    relief=GROOVE
+                    relief=RIDGE
                 )
                 self.active_entries[index_number]\
                     .grid(row=self.attempt, column=index_number+1, padx=0, pady=0, sticky=W)
