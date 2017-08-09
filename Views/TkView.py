@@ -285,7 +285,7 @@ class TkView(AbstractIO):
 
             if analysis_record["multiple"]:
                 self.active_entries[index_number].config(
-                    font=("-weight bold")
+                    font=("Helvetica -weight bold", 14)
                 )
 
             if analysis_record["match"]:
