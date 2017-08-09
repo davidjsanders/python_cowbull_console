@@ -177,6 +177,7 @@ class TkView(AbstractIO):
             self.active_entries.append(Entry(
                 self.play_frame,
                 textvariable=self.guess_inputs[digits],
+                font=("Helvetica", 14),
                 width=3
             ))
             self.active_entries[-1].grid(row=self.attempt, column=digits + 1, sticky=W)
@@ -275,6 +276,7 @@ class TkView(AbstractIO):
             self.active_entries[index_number] = Label(
                 self.play_frame,
                 text=analysis_record["digit"],
+                font=("Helvetica", 14),
                 width=3
             )
 
