@@ -1,5 +1,4 @@
 import sys
-#from AbstractClasses.AbstractController import AbstractController
 from Model.Game import Game
 from time import sleep
 
@@ -17,7 +16,7 @@ class Controller(object):
 
     def play(self):
         self.io_controller.instructions()
-        self.io_controller.construct(callback=self)
+        self.io_controller.construct(callback=self.game_controller)
 
         self.io_controller.update_screen()
 
@@ -78,11 +77,4 @@ class Controller(object):
 
         self.io_controller.setup(10)
         self.io_controller.draw_screen()
-        self.game_controller.execute()
-
-    def instructions(self):
-        self.io_controller.instructions()
-
-    def quit(self):
-        if self.io_controller.quit():
-            sys.exit(0)
+        self.game_controller.execute(game=game, mode=mode, io_controller=self.io_controller)

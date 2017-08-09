@@ -8,6 +8,7 @@
 # DO NOT MODIFY THE CODE WITHOUT UNDERSTANDING THE IMPACT UPON PYTHON 2.7
 #
 import abc
+from AbstractClasses.AbstractIO import AbstractIO
 
 # Force compatibility with Python 2 *and* 3:
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
@@ -16,8 +17,19 @@ ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
 class AbstractController(ABC):
 
     def __init__(self):
-        pass
+        self.game = None
+        self.io_controller = None
 
-    @abc.abstractmethod
-    def execute(self):
-        pass
+    def execute(self, game=None, mode=None, io_controller=None):
+        self.check_required(game=game, io_controller=io_controller)
+        self.game = game
+        self.io_controller = io_controller
+
+    @staticmethod
+    def check_required(game=None, io_controller=None):
+        if not game:
+            raise ValueError("Game is not declared and must be passed to execute.")
+        if not io_controller:
+            raise ValueError("IO Controller is not set. Game cannot be played.")
+        if not isinstance(io_controller, AbstractIO):
+            raise TypeError("IO Controller is not an instance of AbstractIO")

@@ -1,5 +1,6 @@
 import logging
 import argparse
+from Controllers.Controller import Controller as Controller
 
 # Code block executed if the program is 'run'
 if __name__ == "__main__":
@@ -25,11 +26,9 @@ if __name__ == "__main__":
 
     # Decide if using ANSI or GUI
     if args.usegui:
-        from Controllers.Controller import Controller as Controller
         from Views.TkView import TkView as IO
-        from Controllers.ConsoleController import ConsoleController as GameController
+        from Controllers.GUIController import GUIController as GameController
     else:
-        from Controllers.Controller import Controller as Controller
         from Views.ANSIView import ANSIView as IO
         from Controllers.ConsoleController import ConsoleController as GameController
 

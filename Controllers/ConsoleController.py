@@ -7,19 +7,20 @@ class ConsoleController(AbstractController):
     initiated by app.py and controls a single game interaction."""
     def __init__(self):
         super(ConsoleController, self).__init__()
+        self.game = None
+        self.io_controller = None
 
-    def execute(self):
-        print("Coming soon!")
-        return
+    def execute(self, game=None, mode=None, io_controller=None):
+        super(ConsoleController, self).execute(game=game, mode=mode, io_controller=io_controller)
 
         # Ask the Game model to create a game using the mode selected by
         # the user.
-        game_status, error_detail = self.game_controller.game.get_game(mode=mode)
+        game_status, error_detail = self.game.get_game(mode=mode)
         if game_status:
             # If we're here, then the game was successfully created; note,
             # this app has no knowledge of the game object or how it was
             # created. If the AbstractIO has a start message, tell it to show.
-            self.io.start("Okay, the game is about to begin.")
+            self.io_controller.start("Okay, the game is about to begin.")
 
             # Initialize a counter to track the number of guesses which have
             # been made on the game. Note, the user can quit out of the game
@@ -28,10 +29,10 @@ class ConsoleController(AbstractController):
 
             # Setup the header and screen based on the mode (the number of
             # digits and the number of guesses) of the game.
-            self.io.setup(game_tries=game.game_tries)
+            self.io_controller.setup(game_tries=game.game_tries)
 
             # Draw the screen
-            self.io.draw_screen(current_try=counter)
+            self.io_controller.draw_screen(current_try=counter)
 
             # Set a default finish message.
             finish_message = "Okay, thanks for playing!"
@@ -40,7 +41,7 @@ class ConsoleController(AbstractController):
             # using the Game model.
             while True:
                 # Get the guesses from the user.
-                input_list = self.io.get_guess(
+                input_list = self.io_controller.get_guess(
                     game_digits=game.game_digits,
                     default_answer=game.list_of_digits()
                 )
@@ -59,18 +60,18 @@ class ConsoleController(AbstractController):
                 # If there's an error, show the error details and then continue
                 # looping.
                 if status == Game.ERROR:
-                    self.io.report_error(turn_output)
+                    self.io_controller.report_error(turn_output)
                     continue
 
                 # Update the line on the screen for the analysis of the guess.
-                self.io.update_result(
+                self.io_controller.update_result(
                     line_number=counter,
                     result=turn_output["outcome"]["analysis"],
                     numbers_guessed=input_list
                 )
 
                 # Redraw the screen.
-                self.io.draw_screen(current_try=counter)
+                self.io_controller.draw_screen(current_try=counter)
 
                 # Check if the user won or lost the game.
                 if status in [Game.WON, Game.LOST]:
@@ -90,10 +91,10 @@ class ConsoleController(AbstractController):
 
             # The game is over. Print the finish message which will be either the
             # default (if a user quit), a win, or a loss message.
-            self.io.finish(finish_message)
+            self.io_controller.finish(finish_message)
         else:
             # The else block is reached if the Game model is unable to create and
             # initiate a game. This shouldn't happen, but can, so the error is
             # reported and control returns to app.py
-            self.io.report_error(error_detail)
-            self.io.report_status(message="For some reason, it has not been possible to start the game. Sorry.")
+            self.io_controller.report_error(error_detail)
+            self.io_controller.report_status(message="For some reason, it has not been possible to start the game. Sorry.")

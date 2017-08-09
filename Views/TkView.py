@@ -35,6 +35,13 @@ class TkView(AbstractIO):
         self.file_new_menu = None
         self.help_menu = None
 
+        self.game_tries = None
+        self.game_digits = None
+        self.guess_inputs = []
+        self.active_guess_button = None
+        self.active_entries = []
+        self.attempt = 0
+
     #
     # Concrete implementations of abstract methods
     # --------------------------------------------
@@ -85,10 +92,7 @@ class TkView(AbstractIO):
         #
         # Play area frame
         #
-        self.play_frame = Frame(self.frame, bg="green", padx=10, pady=10)
-        self.play_frame.grid(row=2, column=0, sticky=N + S + E + W, padx=0, pady=0)
-        Button(self.play_frame).grid(row=0, column=0, sticky=N + S + E + W)
-        Grid.rowconfigure(self.frame, 2, weight=1)
+        self.setup()
 
         #
         # Status frame
@@ -140,25 +144,84 @@ class TkView(AbstractIO):
         return return_status
 
     def report_error(self, error_detail=None):
+        self.report_status(error_detail)
         MessageBox.showerror(
             title=TkView.app_name,
             message="An error has occurred: {}".format(error_detail)
         )
 
-    def update_result(self, line_number=None, result=None, numbers_guessed=None):
-        pass
+    def update_result(
+            self,
+            line_number=None,
+            result=None,
+            numbers_guessed=None,
+            finished=None
+    ):
+        if result:
+            self._analyse_results(result)
+
+        if finished:
+            return
+
+        self.attempt += 1
+        self.guess_inputs = []
+
+        self.active_entries = []
+
+        Label(
+            self.play_frame,
+            text="Try {}".format(self.attempt)
+        ).grid(row=self.attempt, column=0, sticky=N + S + E + W)
+        for digits in range(0, self.game_digits):
+            self.guess_inputs.append(StringVar())
+            self.active_entries.append(Entry(
+                self.play_frame,
+                textvariable=self.guess_inputs[digits],
+                width=3
+            ))
+            self.active_entries[-1].grid(row=self.attempt, column=digits + 1, sticky=W)
+        self.active_guess_button = Button(
+            self.play_frame,
+            text="Make guess",
+            command=self._callback.make_guess
+        )
+        self.active_guess_button.grid(row=self.attempt, column=self.game_digits + 2, sticky=W)
 
     def finish(self, finish_message=None):
-        pass
+        self.report_status(finish_message)
 
-    def setup(self, game_tries=None):
-        pass
+    def setup(self, game_tries=None, game_digits=None):
+        self.active_entries = []
+        self.active_guess_button = []
+        self.attempt = 0
+        #
+        # Setup the Play area frame
+        #
+        self.play_frame = Frame(self.frame, padx=10, pady=10)
+        self.play_frame.grid(row=2, column=0, sticky=N + S + E + W, padx=0, pady=0)
+        Grid.rowconfigure(self.frame, 2, weight=1)
+
+        if not game_digits:
+            Label(
+                self.play_frame,
+                text="Start a game by clicking on one of the mode buttons."
+            ).grid(row=0, column=0, sticky=N + S + E + W)
+            #        Button(self.play_frame)
+        else:
+            self.game_tries = game_tries
+            self.game_digits = game_digits
+
+            # Draw the first row of buttons
+            self.update_result()
 
     def start(self, start_message=None):
-        pass
+        self.report_status(start_message)
 
     def get_guess(self, game_digits=None, default_answer=None):
-        pass
+        if not self.guess_inputs:
+            raise ValueError("A game is not in play!")
+
+        return [i.get() for i in self.guess_inputs]
 
     def choose_a_mode(self, available_modes=None):
         if not available_modes:
@@ -167,7 +230,8 @@ class TkView(AbstractIO):
         for mode in available_modes:
             Button(
                 self.button_frame,
-                text=mode.capitalize()
+                text=mode.capitalize(),
+                command=lambda x=mode: self._callback.play_mode(mode=x)
             ).grid(row=0, column=colcount, sticky=E)
             colcount += 1
         Button(
@@ -178,15 +242,62 @@ class TkView(AbstractIO):
         return available_modes[0], None
 
     def draw_screen(self, current_try=None):
-        self._check_callback(value=self._callback)
-        self.root.mainloop()
+        pass
 
     def update_screen(self):
         self.root.update()
 
     #
+    # 'Public' methods
+    #
+    def run_loop(self):
+        self._check_callback(value=self._callback)
+        self.root.mainloop()
+
+    def get_digits(self):
+        if not self.guess_inputs:
+            raise ValueError("A game is not in play!")
+
+        return [i.get() for i in self.guess_inputs]
+
+    #
     # 'Private' methods
     # -----------------
+
+    def _analyse_results(self, game_analysis):
+        self.active_guess_button.grid_forget()
+        for ae in self.active_entries:
+            ae.grid_forget()
+
+        for analysis_record in game_analysis:
+            index_number = analysis_record["index"]
+
+            self.active_entries[index_number] = Label(
+                self.play_frame,
+                text=analysis_record["digit"],
+                width=3
+            )
+
+            self.active_entries[index_number]\
+                .grid(row=self.attempt, column=index_number+1, padx=4, pady=4, sticky=W)
+
+            if analysis_record["multiple"]:
+                self.active_entries[index_number].config(
+                    font=("-weight bold")
+                )
+
+            if analysis_record["match"]:
+                self.active_entries[index_number].config(
+                    background="green"
+                )
+            elif analysis_record["in_word"]:
+                self.active_entries[index_number].config(
+                    background="yellow"
+                )
+            else:
+                self.active_entries[index_number].config(
+                    background="red"
+                )
 
     @staticmethod
     def quit():

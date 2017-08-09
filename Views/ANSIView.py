@@ -118,7 +118,7 @@ class ANSIView(AbstractIO):
         sleep(2)
 
     def draw_screen(self, current_try=None):
-        self.user_output_try = "Try {}; your guesses:".format(current_try)
+        self.user_output_try = "Try {}; your guesses:".format(current_try or 1)
         _ = os.system('clear')
         self._print_lines(self.user_output_header)
         print(self.user_output_try)
