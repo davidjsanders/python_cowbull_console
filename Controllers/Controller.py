@@ -34,7 +34,7 @@ class Controller(object):
         # a call to game.get_game is made. Also, a callback notifier is
         # passed to enable the object to perform user AbstractIO.
         game = Game(callback_notifier=self.io_controller.report_status)
-        sleep(1)
+        #sleep(1)
 
         # Get the Game model to check if the server is ready. It will take
         # configuration from os environment variables. See Game.py for more
@@ -49,13 +49,13 @@ class Controller(object):
             )
             return
         self.io_controller.report_status("Connected to game server. Fetching available game modes...")
-        sleep(1)
+        #sleep(1)
 
         # Ask the Game model to get a list of available modes. The Game
         # servers may have different modes, so the Game model always
         # checks.
         modes, error_detail = game.get_modes()
-        sleep(1)
+        #sleep(1)
 
         if not modes:
             # For some reason (contained in the error detail), the modes

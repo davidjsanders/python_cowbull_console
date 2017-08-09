@@ -285,8 +285,13 @@ class TkView(AbstractIO):
 
             if analysis_record["multiple"]:
                 self.active_entries[index_number].config(
-                    font=("Helvetica -weight bold", 14)
+                    font=("Helvetica -weight bold", 14),
+                    text="{}".format(analysis_record["digit"]),
+                    borderwidth=4,
+                    relief=GROOVE
                 )
+                self.active_entries[index_number]\
+                    .grid(row=self.attempt, column=index_number+1, padx=0, pady=0, sticky=W)
 
             if analysis_record["match"]:
                 self.active_entries[index_number].config(
