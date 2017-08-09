@@ -228,16 +228,19 @@ class TkView(AbstractIO):
         if not available_modes:
             return None, "The game server returned no modes. Unable to continue playing."
         colcount = 0
+
         for mode in available_modes:
+            self.file_new_menu.add_command(label=mode, command=lambda x=mode: self._callback.play_mode(mode=x))
             Button(
                 self.button_frame,
                 text=mode.capitalize(),
                 command=lambda x=mode: self._callback.play_mode(mode=x)
             ).grid(row=0, column=colcount, sticky=E)
             colcount += 1
+
         Button(
             self.button_frame,
-            text="Quit",
+            text="Exit",
             command=self._callback.quit
         ).grid(row=0, column=colcount, sticky=E)
         return available_modes[0], None
@@ -287,6 +290,7 @@ class TkView(AbstractIO):
                 self.active_entries[index_number].config(
                     font=("Helvetica -weight bold", 14),
                     text="{}".format(analysis_record["digit"]),
+                    highlightbackground="blue",
                     borderwidth=4,
                     relief=GROOVE
                 )

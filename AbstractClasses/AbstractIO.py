@@ -49,7 +49,7 @@ class AbstractIO(ABC):
         pass
 
     @abc.abstractmethod
-    def setup(self, game_tries=None):
+    def setup(self, game_tries=None, game_digits=None):
         pass
 
     @abc.abstractmethod
@@ -82,7 +82,7 @@ class AbstractIO(ABC):
         pass
 
     @abc.abstractmethod
-    def update_result(self, line_number=None, result=None, numbers_guessed=None):
+    def update_result(self, line_number=None, result=None, numbers_guessed=None, finished=None):
         """Update the output for the user"""
         pass
 

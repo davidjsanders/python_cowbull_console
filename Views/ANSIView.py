@@ -104,7 +104,7 @@ class ANSIView(AbstractIO):
 
         return answer.lower(), None
 
-    def setup(self, game_tries=None):
+    def setup(self, game_tries=None, game_digits=None):
         # Setup the header for the correct number of digits required depending
         # upon the game mode.
         self.user_output = []
@@ -151,7 +151,7 @@ class ANSIView(AbstractIO):
             )
 
             if user_input.lower() == "quit":
-                return_list = [-1]  # Sentinel to signify quit
+                return_list = -1  # Sentinel to signify quit
                 break
 
             try:
@@ -169,7 +169,13 @@ class ANSIView(AbstractIO):
 
         return return_list
 
-    def update_result(self, line_number=None, result=None, numbers_guessed=None):
+    def update_result(
+            self,
+            line_number=None,
+            result=None,
+            numbers_guessed=None,
+            finished=None
+    ):
         self.user_output[line_number - 1] = self.line_format \
             .format(
             line_number,
