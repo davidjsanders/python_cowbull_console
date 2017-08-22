@@ -12,7 +12,7 @@ class Controller(object):
 
         self.io_controller = io_controller
         self.game_controller = game_controller
-        #super(Controller, self).__init__(io=io)
+        # super(Controller, self).__init__(io=io)
 
     def play(self):
         self.io_controller.instructions()
@@ -34,7 +34,7 @@ class Controller(object):
         # a call to game.get_game is made. Also, a callback notifier is
         # passed to enable the object to perform user AbstractIO.
         game = Game(callback_notifier=self.io_controller.report_status)
-        #sleep(1)
+        # sleep(1)
 
         # Get the Game model to check if the server is ready. It will take
         # configuration from os environment variables. See Game.py for more
