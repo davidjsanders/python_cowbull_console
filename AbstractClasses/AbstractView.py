@@ -13,7 +13,7 @@ import abc
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
 
 
-class AbstractIO(ABC):
+class AbstractView(ABC):
     info_msg = "This game is part of a series which shows how an API based game object " \
                "and server can be created, deployed to multiple platforms (bare metal, " \
                "Docker, Kubernetes, Google App Engine, etc.), and accessed with multiple " \

@@ -3,10 +3,10 @@ import sys
 from textwrap import wrap
 from time import sleep
 
-from AbstractClasses.AbstractIO import AbstractIO
+from AbstractClasses.AbstractView import AbstractView
 
 
-class ANSIView(AbstractIO):
+class ANSIView(AbstractView):
     ESCAPE_CODE = chr(27)
     UNDERLINE_TEXT = ESCAPE_CODE + "[1m"
     BOLD_TEXT = ESCAPE_CODE + "[4m"

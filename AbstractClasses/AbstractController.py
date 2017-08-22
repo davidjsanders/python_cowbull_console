@@ -8,7 +8,9 @@
 # DO NOT MODIFY THE CODE WITHOUT UNDERSTANDING THE IMPACT UPON PYTHON 2.7
 #
 import abc
-from AbstractClasses.AbstractIO import AbstractIO
+from AbstractClasses.AbstractView import AbstractView
+from Model.Game import Game
+from time import sleep
 
 # Force compatibility with Python 2 *and* 3:
 ABC = abc.ABCMeta('ABC', (object,), {'__slots__': ()})
@@ -20,33 +22,83 @@ class AbstractController(ABC):
     SIGNAL_SUCCESS = 0
     SIGNAL_FINISH = 1
 
-    def __init__(self):
-        self.game = None
-        self.io_controller = None
+    def __init__(self, io_controller=None, delay=None):
+        self.check_controller_defined(io_controller=io_controller)
 
-    def execute(self, game=None, mode=None, io_controller=None):
-        self.check_required(game=game, io_controller=io_controller)
-        self.game = game
+        self.available_modes = None
+        self.game_ready = False
+        self.delay = delay or 0
+
         self.io_controller = io_controller
+        self.game = Game(callback_notifier=self.io_controller.report_status)
+
+    #
+    # Abstract Methods
+    #
 
     @abc.abstractmethod
-    def play_mode(self, mode=None):
-        game_status, error_detail = self.game.get_game(mode=mode)
-        if game_status:
-            # If we're here, then the game was successfully created; note,
-            # this app has no knowledge of the game object or how it was
-            # created. If the AbstractIO has a start message, tell it to show.
-            self.io_controller.start("Okay, the game is about to begin.")
+    def play(self):
+        self.check_controller_defined(io_controller=self.io_controller)
 
-            # Setup the header and screen based on the mode (the number of
-            # digits and the number of guesses) of the game.
-            self.io_controller.setup(game_tries=self.game.game_tries, game_digits=self.game.game_digits)
+        self.io_controller.instructions()
+        self.io_controller.construct(callback=self)
 
-        # Return results to caller.
-        return game_status, error_detail
+        self.io_controller.update_screen()
+
+        # Ask if the user wants to execute
+        if not self.io_controller.want_to_play():
+            # At this point, the user has said they don't want to execute. So
+            # give a farewell and then return control to app.py.
+            self.io_controller.finish("Okay, come back soon!")
+            return self.SIGNAL_BREAK
+
+        self.io_controller.report_status("Connecting to the game server...")
+
+        # The user has started a game, so ask the Game model to create a new
+        # game object; note, no game is started yet, that only happens when
+        # a call to game.get_game is made. Also, a callback notifier is
+        # passed to enable the object to perform user AbstractView.
+        # game = Game(callback_notifier=self.io_controller.report_status)
+        # sleep(self.delay)
+
+        # Get the Game model to check if the server is ready. It will take
+        # configuration from os environment variables. See Game.py for more
+        # information.
+        if not self.game.check_game_server_ready():
+            # The Game model couldn't reach the server or did not receive
+            # a ready response, so report to the user and return control
+            # to app.py.
+            self.io_controller.report_error(
+                "Sorry, the cowbull game isn't available right now; "
+                "please come back later. The issue has been logged."
+            )
+            return
+        self.io_controller.report_status("Connected to game server. Fetching available game modes...")
+        sleep(self.delay)
+
+        # Ask the Game model to get a list of available modes. The Game
+        # servers may have different modes, so the Game model always
+        # checks.
+        modes, error_detail = self.game.get_modes()
+        sleep(self.delay)
+
+        if not modes:
+            # For some reason (contained in the error detail), the modes
+            # weren't returned properly; therefore, the game cannot execute.
+            self.io_controller.report_error(error_detail)
+            return
+
+        self.available_modes = [str(i['mode']) for i in modes]
+        self.io_controller.report_status(
+            "Game is ready. Modes available are: {}".format(', '.join(self.available_modes))
+        )
+        self.game_ready = True
 
     @abc.abstractmethod
     def make_guess(self, line_number=None):
+        self.check_controller_defined(io_controller=self.io_controller)
+        self.check_game_in_play()
+
         # Get the guesses from the user.
         input_list = self.io_controller.get_guess(
             game_digits=self.game.game_digits,
@@ -85,11 +137,18 @@ class AbstractController(ABC):
 
         return self.SIGNAL_SUCCESS, None
 
+
+    #
+    # Static Methods
+    #
+
     @staticmethod
-    def check_required(game=None, io_controller=None):
-        if not game:
-            raise ValueError("Game is not declared and must be passed to execute.")
+    def check_controller_defined(io_controller=None):
         if not io_controller:
             raise ValueError("IO Controller is not set. Game cannot be played.")
-        if not isinstance(io_controller, AbstractIO):
-            raise TypeError("IO Controller is not an instance of AbstractIO")
+        if not isinstance(io_controller, AbstractView):
+            raise TypeError("IO Controller is not an instance of AbstractView")
+
+    def check_game_in_play(self):
+        if not self.game:
+            raise ValueError("Game has not been instantiated!")

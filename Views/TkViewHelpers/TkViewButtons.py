@@ -1,5 +1,3 @@
-from AbstractClasses.AbstractController import AbstractController
-
 import sys
 if sys.version_info[0] < 3:
     import Tkinter as Tkinter
@@ -18,7 +16,7 @@ class TkViewButtons(object):
         if not parent:
             raise ValueError("Root frame must be passed for buttons!")
 
-        if not callback or not isinstance(callback, AbstractController):
+        if not callback:
             print("Callback is {}".format(callback))
             raise TypeError("Callback class must be provided to file menu!")
 

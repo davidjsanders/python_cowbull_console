@@ -1,6 +1,5 @@
 import logging
 import argparse
-from Controllers.Controller import Controller as Controller
 
 # Code block executed if the program is 'run'
 if __name__ == "__main__":
@@ -41,11 +40,8 @@ if __name__ == "__main__":
     # Create an Input/Output object
     io = IO()
 
-    # Create a game controller
-    g = GameController()
-
     # Initiate the controller passing the TerminalIO and Helper objects
-    c = Controller(io_controller=io, game_controller=g)
+    c = GameController(io_controller=io)
 
     # Play the game
     c.play()

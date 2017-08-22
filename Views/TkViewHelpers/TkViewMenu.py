@@ -1,5 +1,3 @@
-from AbstractClasses.AbstractController import AbstractController
-
 import sys
 if sys.version_info[0] < 3:
     import Tkinter as Tkinter
@@ -13,7 +11,7 @@ class TkViewMenu(Tkinter.Menu):
     def __init__(self, parent, callback):
         Tkinter.Menu.__init__(self, parent)
 
-        if not callback or not isinstance(callback, AbstractController):
+        if not callback:
             print("Callback is {}".format(callback))
             raise TypeError("Callback class must be provided to file menu!")
 

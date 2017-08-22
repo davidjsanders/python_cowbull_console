@@ -1,6 +1,5 @@
 import sys
-from AbstractClasses.AbstractIO import AbstractIO
-from AbstractClasses.AbstractController import AbstractController
+from AbstractClasses.AbstractView import AbstractView
 from Views.TkViewHelpers.TkViewStatusFrame import TkViewStatusFrame
 
 if sys.version_info[0] < 3:
@@ -13,7 +12,7 @@ else:
     from tkinter import *
 
 
-class TkView(AbstractIO):
+class TkView(AbstractView):
     welcome_msg = "Welcome to the CowBull game. The objective of this game is to guess " \
                   "a set of digits by entering a sequence of numbers. Each time you try " \
                   "to guess, you will see an analysis of your guesses and be given a " \
@@ -317,5 +316,5 @@ class TkView(AbstractIO):
     @staticmethod
     def _check_callback(value):
         pass
-        #if not value or not isinstance(value, AbstractController):
-        #    raise TypeError("Callback must be set and must be a subclass of AbstractClasses.AbstractController")
+        #if not value or not isinstance(value, DeprecatedAbstractController):
+        #    raise TypeError("Callback must be set and must be a subclass of AbstractClasses.DeprecatedAbstractController")

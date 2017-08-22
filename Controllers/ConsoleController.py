@@ -1,25 +1,39 @@
 from AbstractClasses.AbstractController import AbstractController
-from Model.Game import Game
 
 
 class ConsoleController(AbstractController):
-    """ConsoleController is the control module for the python_cowbull_console game. It is
-    initiated by app.py and controls a single game interaction."""
-    def __init__(self):
-        super(ConsoleController, self).__init__()
-        self.game = None
-        self.io_controller = None
+    def __init__(self, io_controller=None):
+        super(ConsoleController, self).__init__(io_controller)
 
-    def execute(self, game=None, mode=None, io_controller=None):
-        super(ConsoleController, self).execute(game=game, mode=mode, io_controller=io_controller)
-        self.play_mode(mode=mode)
+    def make_guess(self, line_number=None):
+        return super(ConsoleController, self).make_guess(line_number=line_number)
 
-    def play_mode(self, mode=None):
-        game_status, error_detail = super(ConsoleController, self).play_mode(mode=mode)
+    def play(self):
+        super(ConsoleController, self).play()
 
-        # Ask the Game model to create a game using the mode selected by
-        # the user.
-        if game_status:
+        if self.game_ready:
+            # If we're here, then the game was successfully created and
+            # the next step in the console model is to ask the user to
+            # choose a mode.
+            mode, error_detail = self.io_controller.choose_a_mode(
+                available_modes=self.available_modes
+            )
+            if not mode:
+                # This should never be reachable, but just in case :)
+                self.io_controller.report_error(error_detail)
+                return
+
+            # Now create a game with the requested mode.
+            self.game.get_game(mode=mode)
+
+            # If the AbstractView has a start message, tell it to show.
+            # Ask the user to chose a mode to execute.
+            self.io_controller.start("Okay, the game is about to begin.")
+
+            # Setup the header and screen based on the mode (the number of
+            # digits and the number of guesses) of the game.
+            self.io_controller.setup(game_tries=self.game.game_tries, game_digits=self.game.game_digits)
+
             # Initialize a counter to track the number of guesses which have
             # been made on the game. Note, the user can quit out of the game
             # at any point and control then returns to app.py.
@@ -38,20 +52,21 @@ class ConsoleController(AbstractController):
                 if return_signal == self.SIGNAL_BREAK:
                     break
 
+                if return_signal == self.SIGNAL_FINISH:
+                    # Regardless of win or loss, the game is over and the message
+                    # returned by the Game model needs to be delivered to the
+                    # user. The finish_message is updated and the loop is broken.
+                    self.io_controller.draw_screen(current_try=counter)
+                    self.io_controller.finish(finish_message=output["outcome"]["message"])
+                    break
+                elif return_signal == self.SIGNAL_ERROR:
+                    continue
+
                 # Increment the guess counter.
                 counter += 1
 
                 # Draw the screen
                 self.io_controller.draw_screen(current_try=counter)
-
-                if return_signal == self.SIGNAL_FINISH:
-                    # Regardless of win or loss, the game is over and the message
-                    # returned by the Game model needs to be delivered to the
-                    # user. The finish_message is updated and the loop is broken.
-                    self.io_controller.finish(finish_message=output["outcome"]["message"])
-                    break
-                elif return_signal == self.SIGNAL_ERROR:
-                    continue
 
                 # Check if the user has exceeded their guesses. If they have,
                 # break the loop.
@@ -61,8 +76,7 @@ class ConsoleController(AbstractController):
             # The else block is reached if the Game model is unable to create and
             # initiate a game. This shouldn't happen, but can, so the error is
             # reported and control returns to app.py
-            self.io_controller.report_error(error_detail)
-            self.io_controller.report_status(message="For some reason, it has not been possible to start the game. Sorry.")
-
-    def make_guess(self, line_number=None):
-        return super(ConsoleController, self).make_guess(line_number=line_number)
+            self.io_controller.report_error("An unexpected error has occurred!")
+            self.io_controller.report_status(
+                message="For some reason, it has not been possible to start the game. Sorry."
+            )
