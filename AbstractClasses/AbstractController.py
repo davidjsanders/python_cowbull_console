@@ -90,7 +90,10 @@ class AbstractController(ABC):
 
         self.available_modes = [str(i['mode']) for i in modes]
         self.io_controller.report_status(
-            "Game is ready. Modes available are: {}".format(', '.join(self.available_modes))
+            "{} ready; modes available are: {}".format(
+                self.game.game_server["host"],
+                ', '.join(self.available_modes)
+            )
         )
         self.game_ready = True
 
@@ -123,6 +126,14 @@ class AbstractController(ABC):
             self.io_controller.report_error(turn_output)
             return self.SIGNAL_ERROR, turn_output
 
+        served_by = None
+        if 'served-by' in turn_output:
+            served_by = turn_output["served-by"]
+
+        self.io_controller.report_status(
+            message="{}: Your guess analysis is above".format(served_by)
+        )
+
         self.io_controller.update_result(
             line_number=line_number,
             result=turn_output["outcome"]["analysis"],
@@ -132,7 +143,9 @@ class AbstractController(ABC):
 
         # Check if the user won or lost the game.
         if finished:
-            self.io_controller.finish(finish_message=turn_output["outcome"]["message"])
+            self.io_controller.finish(
+                finish_message="{}: {}".format(served_by, turn_output["outcome"]["message"])
+            )
             return self.SIGNAL_FINISH, turn_output
 
         return self.SIGNAL_SUCCESS, None

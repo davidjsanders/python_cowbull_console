@@ -6,7 +6,7 @@ from time import sleep
 from AbstractClasses.AbstractView import AbstractView
 
 
-class ANSIView(AbstractView):
+class ConsoleView(AbstractView):
     ESCAPE_CODE = chr(27)
     UNDERLINE_TEXT = ESCAPE_CODE + "[1m"
     BOLD_TEXT = ESCAPE_CODE + "[4m"
@@ -21,13 +21,13 @@ class ANSIView(AbstractView):
                   "means that the number occurs more than once."
 
     def __init__(self):
-        super(ANSIView, self).__init__()
+        super(ConsoleView, self).__init__()
 
-        # Define the header - note the use of ANSIView escape sequences - and the output structures
+        # Define the header - note the use of ConsoleView escape sequences - and the output structures
         # for presenting (and collecting) user TerminalIO.
         self.user_output_header = [
             "Game Analysis: * (Bull), - (Cow), x (miss), " +
-            ANSIView.UNDERLINE_TEXT + ANSIView.BOLD_TEXT + "bold" + ANSIView.NORMAL_TEXT + " (multiple)",
+            ConsoleView.UNDERLINE_TEXT + ConsoleView.BOLD_TEXT + "bold" + ConsoleView.NORMAL_TEXT + " (multiple)",
             "-" * 78,
             ""
         ]
@@ -60,14 +60,14 @@ class ANSIView(AbstractView):
     def instructions(self, instruction_text=None, info_text=None, author=None):
         print('')
 
-        for line in wrap(instruction_text or ANSIView.welcome_msg):
+        for line in wrap(instruction_text or ConsoleView.welcome_msg):
             print(line)
         print('')
 
-        for line in wrap(ANSIView.info_msg):
+        for line in wrap(ConsoleView.info_msg):
             print(line)
         print('')
-        print(ANSIView.author)
+        print(ConsoleView.author)
         print('')
 
     def want_to_play(self):
@@ -251,7 +251,7 @@ class ANSIView(AbstractView):
 
         for analysis_record in game_analysis:
             if analysis_record["multiple"]:
-                output_string += ANSIView.UNDERLINE_TEXT + ANSIView.BOLD_TEXT
+                output_string += ConsoleView.UNDERLINE_TEXT + ConsoleView.BOLD_TEXT
 
             if analysis_record["match"]:
                 output_string += "*"
@@ -261,7 +261,7 @@ class ANSIView(AbstractView):
                 output_string += "x"
 
             if analysis_record["multiple"]:
-                output_string += ANSIView.NORMAL_TEXT
+                output_string += ConsoleView.NORMAL_TEXT
 
             output_string += "| "
 

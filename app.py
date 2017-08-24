@@ -28,7 +28,7 @@ if __name__ == "__main__":
         from Views.TkView import TkView as IO
         from Controllers.GUIController import GUIController as GameController
     else:
-        from Views.ANSIView import ANSIView as IO
+        from Views.ConsoleView import ConsoleView as IO
         from Controllers.ConsoleController import ConsoleController as GameController
 
     # Configure logging.
