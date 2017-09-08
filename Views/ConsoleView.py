@@ -122,6 +122,7 @@ class ConsoleView(AbstractView):
         _ = os.system('clear')
         self._print_lines(self.user_output_header)
         print('Status: {}'.format(self.status))
+        print('')
         print(self.user_output_try)
         print('-'*78)
         self._print_lines(self.user_output)
