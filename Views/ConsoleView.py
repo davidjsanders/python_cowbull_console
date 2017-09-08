@@ -122,7 +122,7 @@ class ConsoleView(AbstractView):
         self.user_output_try = "Try {}; your guesses:".format(current_try or 1)
         _ = os.system('clear')
         self._print_lines(self.user_output_header)
-        print('Status: {}'.format(self.status))
+        print('{}'.format(self.status))
         print('')
         print(self.user_output_try)
         print('-'*78)
