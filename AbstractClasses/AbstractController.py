@@ -170,7 +170,7 @@ class AbstractController(ABC):
             )
             return self.SIGNAL_FINISH, turn_output
 
-        return self.SIGNAL_SUCCESS, None
+        return self.SIGNAL_SUCCESS, turn_output
 
 
     #
