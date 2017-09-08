@@ -11,6 +11,7 @@ class ConsoleView(AbstractView):
     UNDERLINE_TEXT = ESCAPE_CODE + "[4m"
     BOLD_TEXT = ESCAPE_CODE + "[1m"
     NORMAL_TEXT = ESCAPE_CODE + "[0m"
+    YELLOW_TEXT = ESCAPE_CODE + "[93m"
 
     welcome_msg = "Welcome to the CowBull game. The objective of this game is to guess " \
                   "a set of digits by entering a sequence of numbers. Each time you try " \
@@ -135,6 +136,7 @@ class ConsoleView(AbstractView):
 
     def report_error(self, error_detail=None):
         self.status = self.BOLD_TEXT + \
+                      self.YELLOW_TEXT + \
                       (error_detail or "No detail on the error was provided.") + \
                       self.NORMAL_TEXT
         self.draw_screen()
