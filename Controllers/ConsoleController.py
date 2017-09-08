@@ -66,7 +66,7 @@ class ConsoleController(AbstractController):
                 counter += 1
 
                 # Draw the screen
-                #self.io_controller.report_status(message=output["outcome"]["status"])
+                self.io_controller.report_status(message=output["outcome"]["status"])
                 self.io_controller.draw_screen(current_try=counter)
 
                 # Check if the user has exceeded their guesses. If they have,
