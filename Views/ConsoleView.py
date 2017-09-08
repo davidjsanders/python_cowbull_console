@@ -94,7 +94,7 @@ class ConsoleView(AbstractView):
             prompt="What mode of game would you like to execute: {}?".format(', '.join(available_modes)),
             default=default_choice,
             choices=available_modes,
-            ignore_case=True,
+            ignore_case=False,
             help_text="The modes are defined by the game server and, typically, are set to "
                       "provide varying options like easy, normal, and hard. These vary the "
                       "number of guesses you are allowed to make and the number of digits "
@@ -102,7 +102,7 @@ class ConsoleView(AbstractView):
                       "however, it is up to the game server, so they could vary widely."
         )
 
-        return answer.lower(), None
+        return answer, None
 
     def setup(self, game_tries=None, game_digits=None):
         # Setup the header for the correct number of digits required depending
