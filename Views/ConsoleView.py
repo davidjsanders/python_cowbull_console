@@ -8,8 +8,8 @@ from AbstractClasses.AbstractView import AbstractView
 
 class ConsoleView(AbstractView):
     ESCAPE_CODE = chr(27)
-    UNDERLINE_TEXT = ESCAPE_CODE + "[1m"
-    BOLD_TEXT = ESCAPE_CODE + "[4m"
+    UNDERLINE_TEXT = ESCAPE_CODE + "[4m"
+    BOLD_TEXT = ESCAPE_CODE + "[1m"
     NORMAL_TEXT = ESCAPE_CODE + "[0m"
 
     welcome_msg = "Welcome to the CowBull game. The objective of this game is to guess " \
