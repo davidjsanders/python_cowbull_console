@@ -134,10 +134,8 @@ class ConsoleView(AbstractView):
         print("")
 
     def report_error(self, error_detail=None):
-        _err = error_detail or "No detail on the error was provided."
-        print("")
-        print("An error occurred: {}".format(_err))
-        print("")
+        self.status = error_detail or "No detail on the error was provided."
+        self.draw_screen()
 
     def report_status(self, message=None):
         print("{}".format(message))
