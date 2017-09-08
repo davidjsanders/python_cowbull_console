@@ -34,11 +34,13 @@ class AbstractController(ABC):
         self.handler.log(message="Validating IO Controller")
         self.check_controller_defined(io_controller=io_controller)
 
+        self.handler.log(message="Initializing variables")
         self.available_modes = None
         self.game_ready = False
         self.delay = delay or 0
-
         self.io_controller = io_controller
+
+        self.handler.log(message="Instantiating Game object")
         self.game = Game(callback_notifier=self.io_controller.report_status)
 
     #
@@ -47,17 +49,28 @@ class AbstractController(ABC):
 
     @abc.abstractmethod
     def play(self):
+        self.handler.method = "play"
+
+        self.handler.log(message="Playing game")
+        self.handler.log(message="Validating IO Controller")
+
         self.check_controller_defined(io_controller=self.io_controller)
 
+        self.handler.log(message="Show instructions")
         self.io_controller.instructions()
+
+        self.handler.log(message="Construct any IO structures")
         self.io_controller.construct(callback=self)
 
+        self.handler.log(message="Draw the screen")
         self.io_controller.update_screen()
 
         # Ask if the user wants to execute
+        self.handler.log(message="Asking user if they want to play.")
         if not self.io_controller.want_to_play():
             # At this point, the user has said they don't want to execute. So
             # give a farewell and then return control to app.py.
+            self.handler.log(message="User did not want to play.")
             self.io_controller.finish("Okay, come back soon!")
             return self.SIGNAL_BREAK
 
