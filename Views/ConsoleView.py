@@ -28,8 +28,7 @@ class ConsoleView(AbstractView):
         self.user_output_header = [
             "Game Analysis: * (Bull), - (Cow), x (miss), " +
             ConsoleView.UNDERLINE_TEXT + ConsoleView.BOLD_TEXT + "bold" + ConsoleView.NORMAL_TEXT + " (multiple)",
-            "-" * 78,
-            ""
+            "-" * 78
         ]
         self.user_output_try = ""
         self.user_output = []
@@ -122,9 +121,9 @@ class ConsoleView(AbstractView):
         self.user_output_try = "Try {}; your guesses:".format(current_try or 1)
         _ = os.system('clear')
         self._print_lines(self.user_output_header)
+        print('Status: {}'.format(self.status))
         print(self.user_output_try)
         print('-'*78)
-        print('Status: {}'.format(self.status))
         self._print_lines(self.user_output)
         self._print_lines(self.user_output_footer)
 
