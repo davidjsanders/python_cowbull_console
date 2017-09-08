@@ -57,6 +57,7 @@ class ConsoleController(AbstractController):
                     # returned by the Game model needs to be delivered to the
                     # user. The finish_message is updated and the loop is broken.
                     self.io_controller.draw_screen(current_try=counter)
+                    self.io_controller.report_status(message=output["outcome"]["status"])
                     self.io_controller.finish(finish_message=output["outcome"]["status"])
                     break
                 elif return_signal == self.SIGNAL_ERROR:
