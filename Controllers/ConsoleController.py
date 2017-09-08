@@ -16,7 +16,8 @@ class ConsoleController(AbstractController):
             # the next step in the console model is to ask the user to
             # choose a mode.
             mode, error_detail = self.io_controller.choose_a_mode(
-                available_modes=self.available_modes
+                available_modes=self.available_modes,
+                default_choice=self.game.default_mode
             )
             if not mode:
                 # This should never be reachable, but just in case :)

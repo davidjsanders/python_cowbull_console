@@ -62,7 +62,7 @@ class Game:
         self.game_modes = _mode_info.get("modes", [])
         self.instructions = _mode_info.get("instructions", "")
         self.notes = _mode_info.get("notes", "")
-        self.default_mode = _mode_info.get("default_mode", None)
+        self.default_mode = _mode_info.get("default-mode", None)
 
         return self.game_modes, None
 
