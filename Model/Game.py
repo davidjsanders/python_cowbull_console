@@ -35,6 +35,7 @@ class Game:
         self.guesses = []
         self.instructions = None
         self.notes = None
+        self.default_mode = None
         self._callback_notifier = callback_notifier
 
     @property
@@ -58,9 +59,10 @@ class Game:
         if in_error:
             return False, error_detail
 
-        self.game_modes = _mode_info["modes"]
-        self.instructions = _mode_info["instructions"]
-        self.notes = _mode_info["notes"]
+        self.game_modes = _mode_info.get("modes", [])
+        self.instructions = _mode_info.get("instructions", "")
+        self.notes = _mode_info.get("notes","")
+        self.default_mode = _mode_info.get("default_mode", None)
 
         return self.game_modes, None
 
