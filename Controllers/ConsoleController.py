@@ -74,11 +74,3 @@ class ConsoleController(AbstractController):
                 # break the loop.
                 if counter > self.game.game_tries:
                     break
-        else:
-            # The else block is reached if the Game model is unable to create and
-            # initiate a game. This shouldn't happen, but can, so the error is
-            # reported and control returns to app.py
-            self.io_controller.report_error("An unexpected error has occurred!")
-            self.io_controller.report_status(
-                message="For some reason, it has not been possible to start the game. Sorry."
-            )

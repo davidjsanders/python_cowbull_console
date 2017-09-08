@@ -86,7 +86,7 @@ class ConsoleView(AbstractView):
             return False
 
     def choose_a_mode(self, available_modes=None):
-        default_choice = None # TODO Add default mode from server
+        default_choice = None  # TODO Add default mode from server
 
         if not available_modes:
             return False, 'The game server returned no modes. Unable to continue playing.'
