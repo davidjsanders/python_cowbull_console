@@ -38,6 +38,7 @@ class ConsoleView(AbstractView):
             ""
         ]
         self.line_format = "  {:2d}| {} | {}"
+        self.status = ""
 
         # Five lines are used for headers, so the first 'data' item has an offset of 5.
         self.output_offset = 5
@@ -123,6 +124,7 @@ class ConsoleView(AbstractView):
         self._print_lines(self.user_output_header)
         print(self.user_output_try)
         print('-'*78)
+        print('Status: {}'.format(self.status))
         self._print_lines(self.user_output)
         self._print_lines(self.user_output_footer)
 
@@ -139,6 +141,7 @@ class ConsoleView(AbstractView):
 
     def report_status(self, message=None):
         print("{}".format(message))
+        self.status = message
 
     def get_guess(self, game_digits=None, default_answer=None):
         while True:

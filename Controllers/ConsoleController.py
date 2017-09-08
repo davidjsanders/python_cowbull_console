@@ -66,8 +66,6 @@ class ConsoleController(AbstractController):
                 counter += 1
 
                 # Draw the screen
-                print("Output: {}".format(output))
-                input("Press enter")
                 self.io_controller.report_status(message=output["outcome"]["status"])
                 self.io_controller.draw_screen(current_try=counter)
 
