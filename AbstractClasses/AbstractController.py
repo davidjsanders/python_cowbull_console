@@ -8,8 +8,11 @@
 # DO NOT MODIFY THE CODE WITHOUT UNDERSTANDING THE IMPACT UPON PYTHON 2.7
 #
 import abc
+
 from AbstractClasses.AbstractView import AbstractView
+
 from Model.Game import Game
+from Helpers.ErrorHandler import ErrorHandler
 from time import sleep
 
 # Force compatibility with Python 2 *and* 3:
@@ -23,6 +26,12 @@ class AbstractController(ABC):
     SIGNAL_FINISH = 1
 
     def __init__(self, io_controller=None, delay=None):
+        self.handler = ErrorHandler(
+            method="__init__",
+            module="AbstractController"
+        )
+
+        self.handler.log(message="Validating IO Controller")
         self.check_controller_defined(io_controller=io_controller)
 
         self.available_modes = None
