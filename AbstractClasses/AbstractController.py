@@ -166,7 +166,7 @@ class AbstractController(ABC):
         # Check if the user won or lost the game.
         if finished:
             self.io_controller.finish(
-                finish_message="{}: {}".format(served_by, turn_output["outcome"]["message"])
+                finish_message="{}: {}".format(served_by, turn_output["outcome"]["status"])
             )
             return self.SIGNAL_FINISH, turn_output
 
