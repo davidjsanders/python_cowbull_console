@@ -33,6 +33,8 @@ class Game:
         self.game_tries = None
         self.game_modes = None
         self.guesses = []
+        self.instructions = None
+        self.notes = None
         self._callback_notifier = callback_notifier
 
     @property
@@ -44,17 +46,21 @@ class Game:
         self._callback_notifier = value
 
     def get_modes(self):
-        self.game_modes, status = self.get_url_json(
+        _mode_info, status = self.get_url_json(
             url=self.modes_url,
             headers={"Content-type": "application/json"},
             retries=3,
             delay_increment=5
         )
 
-        in_error, error_detail = self.check_status(status, self.game_modes)
+        in_error, error_detail = self.check_status(status, _mode_info)
 
         if in_error:
             return False, error_detail
+
+        self.game_modes = _mode_info["modes"]
+        self.instructions = _mode_info["instructions"]
+        self.notes = _mode_info["notes"]
 
         return self.game_modes, None
 
