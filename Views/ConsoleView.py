@@ -85,14 +85,12 @@ class ConsoleView(AbstractView):
             return False
 
     def choose_a_mode(self, available_modes=None):
-        default_choice = "normal"
-
         if not available_modes:
             return False, 'The game server returned no modes. Unable to continue playing.'
 
         answer = self.get_user_input(
             prompt="What mode of game would you like to execute: {}?".format(', '.join(available_modes)),
-            default=default_choice,
+            default=None,
             choices=available_modes,
             ignore_case=False,
             help_text="The modes are defined by the game server and, typically, are set to "
