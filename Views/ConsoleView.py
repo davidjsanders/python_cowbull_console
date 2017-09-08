@@ -134,7 +134,9 @@ class ConsoleView(AbstractView):
         print("")
 
     def report_error(self, error_detail=None):
-        self.status = error_detail or "No detail on the error was provided."
+        self.status = self.BOLD_TEXT + \
+                      (error_detail or "No detail on the error was provided.") + \
+                      self.NORMAL_TEXT
         self.draw_screen()
 
     def report_status(self, message=None):
