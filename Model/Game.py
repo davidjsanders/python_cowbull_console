@@ -12,9 +12,9 @@ class Game:
 
     def __init__(self, callback_notifier=None):
         self.game_server = dict()
-        self.game_server["host"] = os.getenv("cowbull_host", "localhost")
+        self.game_server["host"] = os.getenv("cowbull_server", "localhost")
         self.game_server["port"] = os.getenv("cowbull_port", 5000)
-        self.game_server["version"] = os.getenv("cowbull_version", "v0_1")
+        self.game_server["version"] = os.getenv("cowbull_version", "v1")
 
         self.core_url = "http://{}:{}/{}".format(
             self.game_server["host"],

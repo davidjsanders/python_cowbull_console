@@ -1,5 +1,6 @@
-import logging
 import argparse
+import logging
+import os
 
 # Code block executed if the program is 'run'
 if __name__ == "__main__":
@@ -20,8 +21,39 @@ if __name__ == "__main__":
                         type=str,
                         default="%(asctime)s %(levelname)s: %(message)s",
                         help="Set the Python logging format")
+    parser.add_argument('--server',
+                        dest='cowbull_server',
+                        default='localhost',
+                        type=str,
+                        help="The name of the cowbull game server, defaults to localhost"
+                        )
+    parser.add_argument('--port',
+                        dest='cowbull_port',
+                        default=5000,
+                        type=int,
+                        help="The port used to serve the cowbull game server, defaults to 5000"
+                        )
+    parser.add_argument('--game-version',
+                        dest='cowbull_version',
+                        default="v1",
+                        type=str,
+                        help="The cowbull game server version, defaults to v1"
+                        )
 
     args = parser.parse_args()
+
+    # Set the environment variables to the arg values
+    # only *IF* they are not already set. If set, env.
+    # vars. take priority
+
+    if not os.getenv("cowbull_server", None):
+        os.environ["cowbull_server"] = args.cowbull_server
+
+    if not os.getenv("cowbull_port", None):
+        os.environ["cowbull_port"] = str(args.cowbull_port)
+
+    if not os.getenv("cowbull_version", None):
+        os.environ["cowbull_version"] = args.cowbull_version
 
     # Decide if using ANSI or GUI
     if args.usegui:
